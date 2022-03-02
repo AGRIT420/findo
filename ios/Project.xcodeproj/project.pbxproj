@@ -12,6 +12,9 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		3D068668FE9B4D1CB7D28271 /* Oxygen-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 54276FB8F0E04B6DA85B566A /* Oxygen-Bold.ttf */; };
+		15E0B4DC530B461D99210E82 /* Oxygen-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 17F24954438C4BC7AEC71B99 /* Oxygen-Light.ttf */; };
+		C864F1540639494DB0023376 /* Oxygen-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 25BDBC2119E04DD39F448AF8 /* Oxygen-Regular.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,6 +39,9 @@
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Project/main.m; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = Project/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		54276FB8F0E04B6DA85B566A /* Oxygen-Bold.ttf */ = {isa = PBXFileReference; name = "Oxygen-Bold.ttf"; path = "../assets/fonts/Oxygen-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		17F24954438C4BC7AEC71B99 /* Oxygen-Light.ttf */ = {isa = PBXFileReference; name = "Oxygen-Light.ttf"; path = "../assets/fonts/Oxygen-Light.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		25BDBC2119E04DD39F448AF8 /* Oxygen-Regular.ttf */ = {isa = PBXFileReference; name = "Oxygen-Regular.ttf"; path = "../assets/fonts/Oxygen-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,6 +115,7 @@
 				00E356EF1AD99517003FC87E /* ProjectTests */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
+				A17AB67192434DF994D7C097 /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -123,6 +130,17 @@
 			);
 			name = Products;
 			sourceTree = "<group>";
+		};
+		A17AB67192434DF994D7C097 /* Resources */ = {
+			isa = "PBXGroup";
+			children = (
+				54276FB8F0E04B6DA85B566A /* Oxygen-Bold.ttf */,
+				17F24954438C4BC7AEC71B99 /* Oxygen-Light.ttf */,
+				25BDBC2119E04DD39F448AF8 /* Oxygen-Regular.ttf */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+			path = "";
 		};
 /* End PBXGroup section */
 
@@ -214,6 +232,9 @@
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				3D068668FE9B4D1CB7D28271 /* Oxygen-Bold.ttf in Resources */,
+				15E0B4DC530B461D99210E82 /* Oxygen-Light.ttf in Resources */,
+				C864F1540639494DB0023376 /* Oxygen-Regular.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
