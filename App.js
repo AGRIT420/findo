@@ -15,7 +15,7 @@ const App = () => {
 
   return (
       <View style={styles.pageContainer}>
-        <MessagesScreen/>
+        <HomeScreen/>
       </View>
   );
 };

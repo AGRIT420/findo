@@ -3,6 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import Card from '../components/Card';
 import CardStack from '../components/CardStack';
 import pets from '../../assets/data/pets';
+import LinearGradient from 'react-native-linear-gradient';
 
 const HomeScreen = () => {
   
@@ -15,6 +16,7 @@ const HomeScreen = () => {
   };
 
   return (
+    <View style={styles.root}>
       <View style={styles.pageContainer}>
         <CardStack 
           data={pets} 
@@ -23,10 +25,17 @@ const HomeScreen = () => {
           onSwipeRight={onSwipeRight} 
         />
       </View>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  root: {
+    width: '100%',
+    heigth: '100%',
+    flex: 1,
+    backgroundColor: 'red',
+  },
   pageContainer: {
     width: '100%',
     justifyContent: 'center', 

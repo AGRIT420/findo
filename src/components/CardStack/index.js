@@ -16,7 +16,6 @@ const SWIPE_VELOCITY = 800;
 
 const CardStack = (props) => {
   const { data, renderItem, onSwipeLeft, onSwipeRight } = props;
-
   const [currentIndex, setCurrentIndex] = useState(0);
   const [nextIndex, setNextIndex] = useState(currentIndex + 1);
   const currentPet = data[currentIndex];
@@ -94,6 +93,7 @@ const CardStack = (props) => {
 const styles = StyleSheet.create({
   root: {
     width: '100%',
+    height: '100%',
     justifyContent: 'center', 
     alignItems: 'center', 
     flex: 1,
