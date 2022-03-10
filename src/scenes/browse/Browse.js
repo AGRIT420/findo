@@ -1,11 +1,11 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import Card from '../components/Card';
-import CardStack from '../components/CardStack';
-import pets from '../../assets/data/pets';
+import Card from '../../components/Card';
+import CardStack from '../../components/CardStack';
+import pets from '../../../assets/data/pets';
 import LinearGradient from 'react-native-linear-gradient';
 
-const HomeScreen = () => {
+const Browse = () => {
   
   const onSwipeLeft = (pet) => {
     console.log("Swiped left", pet.name);
@@ -44,4 +44,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default HomeScreen;
+export default Browse;

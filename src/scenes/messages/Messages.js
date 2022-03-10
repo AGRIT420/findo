@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, SafeAreaView, Text, StyleSheet, Image } from 'react-native';
-import pets from '../../assets/data/pets';
+import pets from '../../../assets/data/pets';
 
-const MessagesScreen = () => {
+const Messages = () => {
     return (
         <SafeAreaView style={styles.root}>
             <View style={styles.container}>
@@ -49,4 +49,4 @@ const styles = StyleSheet.create({
     }
   })
 
-export default MessagesScreen;
+export default Messages;
