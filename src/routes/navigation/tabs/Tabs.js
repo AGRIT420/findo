@@ -2,9 +2,12 @@ import React from "react";
 import { View, Text } from 'react-native';
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { colors } from "../../../theme";
-import { HomeNavigator, MessagesNavigator } from "../stacks";
+import { HomeNavigator, FavoritesNavigator, MessagesNavigator } from "../stacks";
+import Icon from 'react-native-vector-icons/Foundation';
 
 const Tab = createBottomTabNavigator()
+
+//const slidersIcon = ;
 
 const TabNavigator = (props) => (
     <Tab.Navigator
@@ -13,23 +16,42 @@ const TabNavigator = (props) => (
                 switch(route.name) {
                     case 'Przeglądaj':
                         return(
-                            <Text>XD</Text>
+                            <Icon
+                                name="home" 
+                                size={24} 
+                                color={focused ? colors.blue : colors.lightGray}/>
+                        )
+                    case 'Ulubione':
+                        return(
+                            <Icon
+                                name="heart" 
+                                size={24} 
+                                color={focused ? colors.blue : colors.lightGray}/>
                         )
                     case 'Wiadomości':
                         return(
-                            <Text>XD2</Text>
+                            <Icon 
+                                name="comments" 
+                                size={24} 
+                                color={focused ? colors.blue : colors.lightGray}/>
                         )
                     default:
                         return <View/>
                 }
             },
+            showLabel: false,
             headerShown: false,
+            tabBarShowLabel: false,
+            tabBarActiveTintColor: colors.purple,
+            tabBarInactiveTintColor: colors.lightGray,
+            
         })}
         initialRouteName={props.name}
         swipeEnabled={false}
     >
-        <Tab.Screen name="Browse" component={HomeNavigator}/>
-        <Tab.Screen name="Messages" component={MessagesNavigator}/>    
+        <Tab.Screen name="Przeglądaj" component={HomeNavigator}/>
+        <Tab.Screen name="Ulubione" component={FavoritesNavigator}/>
+        <Tab.Screen name="Wiadomości" component={MessagesNavigator}/>    
     </Tab.Navigator>
 )
 

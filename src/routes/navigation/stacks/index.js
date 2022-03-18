@@ -1,3 +1,3 @@
-import { HomeNavigator, MessagesNavigator } from "./Stacks";
+import { HomeNavigator, FavoritesNavigator, MessagesNavigator } from "./Stacks";
 
-export { HomeNavigator, MessagesNavigator };
+export { HomeNavigator, FavoritesNavigator, MessagesNavigator };

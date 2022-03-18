@@ -12,6 +12,10 @@ target 'Project' do
     :hermes_enabled => false
   )
 
+  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+
+  pod 'RNTextGradientView', :path => '../node_modules/react-native-text-gradient'
+
   target 'ProjectTests' do
     inherit! :complete
     # Pods for testing

@@ -1,9 +1,10 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import { colors } from '../../../theme';
-import HeaderTitle from './HeaderTitle';
 import Home from '../../../scenes/home';
 import Messages from '../../../scenes/messages';
+import Favorites from '../../../scenes/favorites';
+import Profile from '../../../scenes/profile';
+import Details from '../../../scenes/details';
 
 const Stack = createStackNavigator();
 
@@ -13,32 +14,47 @@ const navigationProps = {
 
 export const HomeNavigator = () => (
     <Stack.Navigator
-        initialRouteName="Browse"
-        //headerMode="screen"
+        initialRouteName="HomeScreen"
         screenOptions={navigationProps}
     >
         <Stack.Screen
-            name="BrowseScreen"
+            name="HomeScreen"
             component={Home}
-            options={({ navigation }) => ({
-                title: "Przeglądaj",
-            })}
         />
+
+        <Stack.Screen
+            name="ProfileScreen"
+            component={Profile}
+        />
+    </Stack.Navigator>
+)
+
+export const FavoritesNavigator = () => (
+    <Stack.Navigator
+        initialRouteName="FavoritesScreen"
+        screenOptions={navigationProps}
+    >
+        <Stack.Screen
+            name="FavoritesScreen"
+            component={Favorites}
+        />
+
+        <Stack.Screen
+            name="DetailsScreen"
+            component={Details}
+        />
+
     </Stack.Navigator>
 )
 
 export const MessagesNavigator = () => (
     <Stack.Navigator
-        initialRouteName="Messages"
-        //headerMode="screen"
+        initialRouteName="MessagesScreen"
         screenOptions={navigationProps}
     >
         <Stack.Screen
             name="MessagesScreen"
             component={Messages}
-            options={({ navigation }) => ({
-                title: "Wiadomości",
-            })}
         />
     </Stack.Navigator>
 )

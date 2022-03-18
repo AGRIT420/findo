@@ -1,9 +1,9 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, SafeAreaView, StyleSheet, Text, Image, TouchableOpacity } from 'react-native';
 import Card from '../../components/Card';
 import CardStack from '../../components/CardStack';
 import pets from '../../../assets/data/pets';
-import LinearGradient from 'react-native-linear-gradient';
+import { colors } from '../../theme';
 
 const Browse = () => {
   
@@ -34,13 +34,23 @@ const styles = StyleSheet.create({
     width: '100%',
     heigth: '100%',
     flex: 1,
-    backgroundColor: 'red',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    backgroundColor: colors.white,
+  },
+  propertiesBar: {
+    width: '100%',
+    height: 46,
+    paddingHorizontal: 15,
+    alignItems: 'flex-end',
+    justifyContent: 'center',
   },
   pageContainer: {
     width: '100%',
+    height: '95%',
     justifyContent: 'center', 
-    alignItems: 'center', 
-    flex: 1,
+    alignItems: 'flex-start', 
+    paddingTop: 10,
   },
 })
 
