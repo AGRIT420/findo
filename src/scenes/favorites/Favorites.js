@@ -14,8 +14,9 @@ const Favorites = ({ navigation }) => {
             </View>
             <View style={styles.container}>
                 <ScrollView showsVerticalScrollIndicator={false} style={styles.list}>
-                    {pets.map((item) => (
+                    {pets.map((item, key) => (
                         <TouchableOpacity onPress={() => navigation.navigate('DetailsScreen', {
+                            key: item.key,
                             image: item.image,
                             name: item.name,
                             address: item.address,
@@ -25,7 +26,7 @@ const Favorites = ({ navigation }) => {
                             since: item.since,
                             healthCondition: item.healthCondition,
                         })}>
-                            <FavoriteItem pet={item}/>
+                            <FavoriteItem key={item.key} pet={item}/>
                         </TouchableOpacity>
                     ))}
                 </ScrollView>
@@ -45,7 +46,7 @@ const styles = StyleSheet.create({
     },
     titleBar: {
         width: '100%',
-        height: 50,
+        height: '7%',
         flexDirection: 'row',
         alignItems: 'center',
         paddingHorizontal: 15,

@@ -94,7 +94,7 @@ const CardStack = (props) => {
 const styles = StyleSheet.create({
   root: {
     width: '100%',
-    height: '100%',
+    height: '90%',
     justifyContent: 'flex-start', 
     alignItems: 'center', 
     flex: 1,
@@ -102,14 +102,14 @@ const styles = StyleSheet.create({
   },
   animatedCard: {
     width: '100%',
-    height: '100%',
+    height: '90%',
     justifyContent: 'center',
     alignItems: 'center',
   },
   nextCardContainer: {
     width: '100%',
     height: '100%',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     position: 'absolute',
   }

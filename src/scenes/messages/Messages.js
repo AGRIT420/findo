@@ -23,10 +23,11 @@ const Messages = () => {
 
 const styles = StyleSheet.create({
     pageContainer: {
-        backgroundColor: colors.white,
-        justifyContent: 'center', 
+        width: '100%',
+        height: '100%',
+        justifyContent: 'flex-start', 
         alignItems: 'center', 
-        flex: 0,
+        backgroundColor: colors.white,
     },
     title: {
         fontFamily: 'Oxygen-Regular',
@@ -35,7 +36,7 @@ const styles = StyleSheet.create({
       },
     titleBar: {
         width: '100%',
-        height: 50,
+        height: '7%',
         flexDirection: 'row',
         alignItems: 'center',
         paddingHorizontal: 15,
@@ -46,6 +47,8 @@ const styles = StyleSheet.create({
         borderColor: colors.ultraLightGray,
     },
     container: {
+        width: '100%',
+        height: '93%',
         padding: 10,
     },
     pets: {

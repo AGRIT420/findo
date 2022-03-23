@@ -1,6 +1,6 @@
 export default [
     {
-      id: '1',
+      key: 0,
       name: 'Tito',
       image: 'https://i.imgur.com/nJ63pxf.jpeg',
       //description: 'Maly piesek szuka nowego domu...',
@@ -12,7 +12,7 @@ export default [
       healthCondition: 'w pełni zdrowy',
     },
     {
-      id: '2',
+      key: 1,
       name: 'Sonia',
       image: 'https://i.imgur.com/Kt5VGVp.jpeg',
       //description: 'Porzucona Sonia poszukuje ciepłego domu...',
@@ -24,7 +24,7 @@ export default [
       healthCondition: 'dobry',
     },
     {
-      id: '3',
+      key: 2,
       name: 'Max',
       image: 'https://i.imgur.com/JpjACIN.jpeg',
       //description: 'Wesoly i pelen energii Max potrzebuje przyjaciela...',
@@ -36,7 +36,7 @@ export default [
       healthCondition: 'w pełni zdrowy',
     },
     {
-      id: '4',
+      key: 3,
       name: 'Azor',
       image: 'https://i.imgur.com/rUVcb50.jpeg',
       //description: 'Inteligentny i skrzywdzony Azor potrzebuje ciepła i miłości...',
@@ -48,7 +48,7 @@ export default [
       healthCondition: 'wymaga leczenia',
     },
     {
-      id: '5',
+      key: 4,
       name: 'Reksio',
       image: 'https://i.imgur.com/6Wl5jgu.jpeg',
       //description: 'Malutki Reksio szuka nowego miejsca...',

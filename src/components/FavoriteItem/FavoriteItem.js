@@ -2,7 +2,7 @@ import React from 'react';
 import { Text, Image, View, StyleSheet } from 'react-native';
 import { colors } from '../../theme';
 
-const FavoriteItem = (props) => {
+const FavoriteItem = (props, key) => {
     const { image, name, address, description } = props.pet;
     
     return (

@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
     },
     titleBar: {
         width: '100%',
-        height: 50,
+        height: '7%',
         flexDirection: 'row',
         alignItems: 'center',
         paddingHorizontal: 15,
