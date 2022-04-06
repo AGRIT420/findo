@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Text, useWindowDimensions } from 'react-native';
+import { View, StyleSheet, Text, useWindowDimensions, TouchableOpacity } from 'react-native';
 import { PanGestureHandler } from 'react-native-gesture-handler';
 import Animated, { 
   useSharedValue, 
@@ -71,8 +71,17 @@ const CardStack = (props) => {
     setNextIndex(currentIndex + 1);
   }, [currentIndex, translateX]);
 
+  const restartStack = () => {
+    setCurrentIndex(0);
+    setNextIndex(currentIndex + 1);
+  }
+
   return (
       <View style={styles.root}>
+        <Text style={styles.backText}>Przejrzano wszystkie propozycje.</Text>
+        <TouchableOpacity style={styles.reloadButton} onPress={() => restartStack()}>
+          <Text style={styles.reloadText}>Załaduj ponownie</Text>
+        </TouchableOpacity>
         {nextPet && (
         <View style={styles.nextCardContainer}>
           <Animated.View style={[styles.animatedCard, nextCardStyle]}>
@@ -87,6 +96,7 @@ const CardStack = (props) => {
           </Animated.View>
         </PanGestureHandler>
         )}
+        
       </View>
   );
 };
@@ -112,7 +122,22 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
     position: 'absolute',
-  }
+  },
+  backText: {
+    fontFamily: 'Oxygen-Regular',
+    position: 'absolute',
+    alignSelf: 'center',
+    top: '45%',
+  },
+  reloadButton: {
+    position: 'absolute',
+    alignSelf: 'center',
+    top: '49%',
+  },
+  reloadText: {
+    fontFamily: 'Oxygen-Bold',
+    color: colors.blue,
+  },
 })
 
 export default CardStack;

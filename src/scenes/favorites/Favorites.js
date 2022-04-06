@@ -8,15 +8,14 @@ import { colors } from '../../theme';
 const Favorites = ({ navigation }) => {
     return (
         <SafeAreaView style={styles.pageContainer}>
-            <StatusBar animated={true} backgroundColor={colors.black}/>
+            <StatusBar animated={true} barStyle='dark-content' backgroundColor={colors.white}/>
             <View style={styles.titleBar}>
                 <Text style={styles.title}>polubione</Text>
             </View>
             <View style={styles.container}>
                 <ScrollView showsVerticalScrollIndicator={false} style={styles.list}>
                     {pets.map((item, key) => (
-                        <TouchableOpacity onPress={() => navigation.navigate('DetailsScreen', {
-                            key: item.key,
+                        <TouchableOpacity key={key} onPress={() => navigation.navigate('DetailsScreen', {
                             image: item.image,
                             name: item.name,
                             address: item.address,

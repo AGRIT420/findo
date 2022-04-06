@@ -1,10 +1,28 @@
 import React from 'react';
-import { View, SafeAreaView, Text, StyleSheet, Image, StatusBar, TouchableOpacity } from 'react-native';
+import { View, SafeAreaView, Text, StyleSheet, StatusBar, ScrollView, TouchableNativeFeedback, TouchableOpacity, Image } from 'react-native';
 import PropTypes from 'prop-types';
+import LinearGradient from 'react-native-linear-gradient';
 import { colors } from '../../theme';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
-const Profile = ({ navigation }) => {
+const Conversation = ({ route, navigation }) => {
+    const image = route?.params?.image
+    const name = route?.params?.name
+    const address = route?.params?.address
+    const description = route?.params?.description
+    const detailedDescription = route?.params?.detailedDescription
+    const age = route?.params?.age
+    const since = route?.params?.since
+    const healthCondition = route?.params?.healthCondition
+
+    const askQuestionHandler = () => {
+        console.log('Zadaj pytanie');
+    }
+  
+      const makeAppointmentHandler = () => {
+        console.log("Umow sie");
+    }
+
     return (
         <SafeAreaView style={styles.pageContainer}>
             <StatusBar animated={true} barStyle='dark-content' backgroundColor={colors.white}/>
@@ -20,11 +38,11 @@ const Profile = ({ navigation }) => {
                     </TouchableOpacity>
                 </View>
                 <View style={styles.titleContainer}>
-                    <Text style={styles.title}>profil</Text>
+                    <Text style={styles.title}>konwersacja</Text>
                 </View>
             </View>
             <View style={styles.content}>
-
+            
             </View>
         </SafeAreaView>
     )
@@ -74,4 +92,4 @@ const styles = StyleSheet.create({
     },
   })
 
-export default Profile;
+export default Conversation;

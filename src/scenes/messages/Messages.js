@@ -2,21 +2,23 @@ import React from 'react';
 import { View, SafeAreaView, Text, StyleSheet, StatusBar, Image } from 'react-native';
 import pets from '../../../assets/data/pets';
 import { colors } from '../../theme';
+import MessagesListItem from '../../components/MessagesListItem/MessageListItem';
+import rooms from '../../../assets/data/rooms';
+import { FlatList } from 'react-native-gesture-handler';
 
 const Messages = () => {
     return (
         <SafeAreaView style={styles.pageContainer}>
-        <StatusBar animated={true} backgroundColor={colors.black}/>
+        <StatusBar animated={true} barStyle='dark-content' backgroundColor={colors.white}/>
         <View style={styles.titleBar}>
         <Text style={styles.title}>wiadomości</Text>
         </View>
-        <View style={styles.pets}>
-            {pets.map(pet => (
-                <View style={styles.pet} key={pet.id}>
-                    <Image source={{uri: pet.image}} style={styles.image}/>
-                </View>
-            ))}
-        </View>
+            <FlatList 
+                style={styles.list}
+                data={rooms} 
+                renderItem={({ item }) => <MessagesListItem room={item}/>}
+                keyExtractor={(item) => item.id}
+            />
         </SafeAreaView>
     )
 }
@@ -51,20 +53,9 @@ const styles = StyleSheet.create({
         height: '93%',
         padding: 10,
     },
-    pets: {
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-    },
-    pet: {
-        width: 100,
-        height: 100,
-        margin: 10,
-    },
-    image: {
+    list: {
         width: '100%',
-        height: '100%',
-        borderRadius: 50,
-    },
+    }
   })
 
 export default Messages;

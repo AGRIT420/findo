@@ -25,7 +25,7 @@ const Details = ({ route, navigation }) => {
 
     return (
         <SafeAreaView style={styles.pageContainer}>
-            <StatusBar animated={true} backgroundColor={colors.black}/>
+            <StatusBar animated={true} barStyle='dark-content' backgroundColor={colors.white}/>
             <View style={styles.titleBar}>
                 <View style={styles.iconContainer}>
                     <TouchableOpacity onPress={
