@@ -2,7 +2,6 @@ import React from 'react';
 import { View, SafeAreaView, Text, StyleSheet, StatusBar, ScrollView, TouchableOpacity, Image } from 'react-native';
 import pets from '../../../assets/data/pets';
 import FavoriteItem from '../../components/FavoriteItem/FavoriteItem';
-import FavoritesList from '../../components/FavoritesList/FavoritesList';
 import { colors } from '../../theme';
 
 const Favorites = ({ navigation }) => {

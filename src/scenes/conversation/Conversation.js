@@ -1,27 +1,17 @@
 import React from 'react';
-import { View, SafeAreaView, Text, StyleSheet, StatusBar, ScrollView, TouchableNativeFeedback, TouchableOpacity, Image } from 'react-native';
+import { View, SafeAreaView, Text, Image, StyleSheet, StatusBar, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
-import LinearGradient from 'react-native-linear-gradient';
 import { colors } from '../../theme';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import { FlatList } from 'react-native-gesture-handler';
+import chats from '../../../assets/data/chats';
+import MessageRectangle from '../../components/MessageRectangle/MessageRectangle';
+import MessageInputBox from '../../components/MessageInputBox/MessageInputBox';
 
 const Conversation = ({ route, navigation }) => {
-    const image = route?.params?.image
-    const name = route?.params?.name
-    const address = route?.params?.address
-    const description = route?.params?.description
-    const detailedDescription = route?.params?.detailedDescription
-    const age = route?.params?.age
-    const since = route?.params?.since
-    const healthCondition = route?.params?.healthCondition
-
-    const askQuestionHandler = () => {
-        console.log('Zadaj pytanie');
-    }
-  
-      const makeAppointmentHandler = () => {
-        console.log("Umow sie");
-    }
+    const id = route?.params?.id
+    const username = route?.params?.username
+    const imageUri = route?.params?.imageUri
 
     return (
         <SafeAreaView style={styles.pageContainer}>
@@ -38,14 +28,55 @@ const Conversation = ({ route, navigation }) => {
                     </TouchableOpacity>
                 </View>
                 <View style={styles.titleContainer}>
-                    <Text style={styles.title}>konwersacja</Text>
+                    <Image source={{ uri: imageUri }} style={styles.avatar}/>
+                    <Text numberOfLines={2} style={styles.title}>{username}</Text>
                 </View>
             </View>
-            <View style={styles.content}>
             
+            <View style={styles.content}>
+                <FlatList 
+                    data={chats.messages} 
+                    renderItem={({ item }) => 
+                            <MessageRectangle message={item}/>}
+                    keyExtractor={(item) => item.id}
+                />
+                <MessageInputBox/>
             </View>
+            
         </SafeAreaView>
     )
+}
+
+Conversation.propTypes = {
+    route: PropTypes.shape({
+        params: PropTypes.shape({
+            id: PropTypes.string,
+            username: PropTypes.string,
+        }),
+    }),
+    navigation: PropTypes.shape({
+        params: PropTypes.shape({
+            id: PropTypes.string,
+            username: PropTypes.string,
+        }),
+        goBack: PropTypes.func,
+    }),
+}
+
+Conversation.defaultProps = {
+    route: {
+        params: {
+            id: '0',
+            username: 'null',
+        },
+    },
+    navigation: {
+        params: {
+            id: '0',
+            username: 'null',
+        },
+        goBack: () => null,
+    }
 }
 
 const styles = StyleSheet.create({
@@ -66,6 +97,8 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         backgroundColor: colors.white,
         paddingVertical: 2,
+        borderBottomWidth: 1,
+        borderColor: colors.ultraLightGray,
     },
     iconContainer: {
         width: '5%',
@@ -75,20 +108,30 @@ const styles = StyleSheet.create({
         width: '95%',
         paddingRight: '5%',
         alignItems: 'center',
+        flexDirection: 'row',
     },
     title: {
+        width: '85%',
+        paddingLeft: 12,
+        lineHeight: 20,
         fontFamily: 'Oxygen-Regular',
-        fontSize: 28,
+        fontSize: 16,
         color: colors.blue,
     },
     icon: {
         justifyContent: 'flex-start',
         alignSelf: 'flex-start',
     },
+    avatar: {
+        width: 40,
+        height: 40,
+        marginLeft: 18,
+        borderRadius: 30,
+    },
     content: {
-        width: '90%',
+        width: '100%',
         height: '100%',
-        paddingTop: 8,
+        flex: 1,
     },
   })
 

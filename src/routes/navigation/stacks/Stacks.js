@@ -5,6 +5,7 @@ import Messages from '../../../scenes/messages';
 import Favorites from '../../../scenes/favorites';
 import Profile from '../../../scenes/profile';
 import Details from '../../../scenes/details';
+import Conversation from '../../../scenes/conversation';
 
 const Stack = createStackNavigator();
 
@@ -56,5 +57,11 @@ export const MessagesNavigator = () => (
             name="MessagesScreen"
             component={Messages}
         />
+
+        <Stack.Screen
+            name="ConversationScreen"
+            component={Conversation}
+        />
+
     </Stack.Navigator>
 )

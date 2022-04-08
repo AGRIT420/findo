@@ -1,12 +1,12 @@
 import React from 'react';
-import { View, SafeAreaView, Text, StyleSheet, StatusBar, Image } from 'react-native';
+import { View, SafeAreaView, Text, StyleSheet, StatusBar, Image, TouchableOpacity } from 'react-native';
 import pets from '../../../assets/data/pets';
 import { colors } from '../../theme';
 import MessagesListItem from '../../components/MessagesListItem/MessageListItem';
 import rooms from '../../../assets/data/rooms';
 import { FlatList } from 'react-native-gesture-handler';
 
-const Messages = () => {
+const Messages = ({ navigation }) => {
     return (
         <SafeAreaView style={styles.pageContainer}>
         <StatusBar animated={true} barStyle='dark-content' backgroundColor={colors.white}/>
@@ -16,7 +16,14 @@ const Messages = () => {
             <FlatList 
                 style={styles.list}
                 data={rooms} 
-                renderItem={({ item }) => <MessagesListItem room={item}/>}
+                renderItem={({ item }) => 
+                    <TouchableOpacity onPress={() => navigation.navigate('ConversationScreen', {
+                        id: item.id,
+                        username: item.users[1].name,
+                        imageUri: item.users[1].imageUri,
+                    })}>
+                        <MessagesListItem room={item}/>
+                    </TouchableOpacity>}
                 keyExtractor={(item) => item.id}
             />
         </SafeAreaView>

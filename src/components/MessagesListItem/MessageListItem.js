@@ -1,26 +1,31 @@
 import React from 'react';
-import { View, SafeAreaView, Text, StyleSheet, StatusBar, Image, Avatar } from 'react-native';
+import { View, SafeAreaView, Text, StyleSheet, Image } from 'react-native';
 import { colors } from '../../theme';
 import moment from 'moment-timezone';
 import 'moment/locale/pl';
 
-const MessagesListItem = (props) => {
+const MessagesListItem = (props, { navigation }) => {
     const { room } = props;
     const user = room.users[1];
 
+
     return (
-        <SafeAreaView style={styles.container}>
+        <View style={styles.container}>
             <View style={styles.leftContainer}>
                 <Image source={{ uri: user.imageUri }} style={styles.avatar}/>
                 <View style={styles.midContainer}>
                     <Text numberOfLines={1} style={styles.username}>{user.name}</Text>
                     <Text numberOfLines={1} style={styles.lastMessage}>{room.lastMessage.content}</Text>
                     <Text style={styles.time}> 
-                        {moment.tz(room.lastMessage.createdAt, 'Europe/Warsaw').locale('pl').startOf('minute').fromNow()}
+                        {moment(room.lastMessage.createdAt, 'YYYY-MM-DD HH:mm:ss', 'pl')
+                        .subtract(12, 'hours')
+                        .tz('Europe/Warsaw')
+                        .startOf('second')
+                        .fromNow()}
                     </Text>
-                </View>
+                 </View>
             </View>
-        </SafeAreaView>
+         </View>
     )
 }
 

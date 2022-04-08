@@ -13,7 +13,7 @@ export default [
         lastMessage: {
             id: 'm1',
             content: 'Dziękuję za informację. Odezwę się gdy tylko skompletuję niezbędną dokumentację ;)',
-            createdAt: '2022-04-06T18:59:00'
+            createdAt: '2022-04-07T13:13:00'
         }
     },
 
@@ -31,7 +31,7 @@ export default [
         lastMessage: {
             id: 'm1',
             content: 'Pozdrawiam',
-            createdAt: '2022-04-02T12:44:00'
+            createdAt: '2022-04-07T12:44:00'
         }
     },
 
@@ -49,7 +49,7 @@ export default [
         lastMessage: {
             id: 'm1',
             content: 'Rozumiem, dam znać w ciagu 2 dni. Dziękuję i pozdrawiam serdecznie',
-            createdAt: '2022-04-02T12:44:00'
+            createdAt: '2022-04-07T10:01:00'
         }
     },
 
@@ -67,7 +67,7 @@ export default [
         lastMessage: {
             id: 'm1',
             content: 'Dziękuję',
-            createdAt: '2022-04-02T12:44:00'
+            createdAt: '2022-04-06T17:21:00'
         }
     },
 
@@ -85,7 +85,7 @@ export default [
         lastMessage: {
             id: 'm1',
             content: 'Pozdrawiam serdecznie',
-            createdAt: '2022-04-02T12:44:00'
+            createdAt: '2022-04-06T15:12:00'
         }
     },
 
@@ -103,7 +103,7 @@ export default [
         lastMessage: {
             id: 'm1',
             content: 'Dziękuję za informację',
-            createdAt: '2022-04-04T22:15:00'
+            createdAt: '2022-04-05T12:10:00'
         }
     },
 
@@ -121,7 +121,7 @@ export default [
         lastMessage: {
             id: 'm1',
             content: 'Pozdrawiam',
-            createdAt: '2022-04-02T12:44:00'
+            createdAt: '2022-04-05T10:44:00'
         }
     },
 
@@ -139,7 +139,7 @@ export default [
         lastMessage: {
             id: 'm1',
             content: 'Rozumiem, dam znać w ciagu 2 dni',
-            createdAt: '2022-04-02T12:44:00'
+            createdAt: '2022-04-04T20:01:00'
         }
     },
 
@@ -157,7 +157,7 @@ export default [
         lastMessage: {
             id: 'm1',
             content: 'Dziękuję',
-            createdAt: '2022-04-02T12:44:00'
+            createdAt: '2022-04-04T12:12:00'
         }
     },
 
@@ -175,7 +175,7 @@ export default [
         lastMessage: {
             id: 'm1',
             content: 'Pozdrawiam serdecznie',
-            createdAt: '2022-04-02T12:44:00'
+            createdAt: '2022-04-03T16:45:00'
         }
     }
 ]
