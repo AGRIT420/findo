@@ -1,0 +1,20 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-findo-dev-191221-authRole",
+      "UnauthRoleArn": "arn:aws:iam::246839391535:role/amplify-findo-dev-191221-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::246839391535:role/amplify-findo-dev-191221-authRole",
+      "Region": "eu-central-1",
+      "DeploymentBucketName": "amplify-findo-dev-191221-deployment",
+      "UnauthRoleName": "amplify-findo-dev-191221-unauthRole",
+      "StackName": "amplify-findo-dev-191221",
+      "StackId": "arn:aws:cloudformation:eu-central-1:246839391535:stack/amplify-findo-dev-191221/39ba8350-b828-11ec-aa36-022a0531a8de",
+      "AmplifyAppId": "d2ap9wanl74k00"
+    },
+    "categories": {
+      "auth": {
+        "findocf4b4d32": {}
+      }
+    }
+  }
+}
