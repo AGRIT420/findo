@@ -1,6 +1,7 @@
 export default [
     {
       key: 0,
+      shelterID: '16b1d850-11ed-4f1d-8c44-f8d5eced2f80',
       name: 'Tito',
       image: 'https://i.imgur.com/nJ63pxf.jpeg',
       //description: 'Maly piesek szuka nowego domu...',
@@ -15,6 +16,7 @@ export default [
     },
     {
       key: 1,
+      shelterID: '3669426a-10e0-4572-8d25-8f4903e0b3ab',
       name: 'Sonia',
       image: 'https://i.imgur.com/Kt5VGVp.jpeg',
       //description: 'Porzucona Sonia poszukuje ciepłego domu...',
@@ -29,6 +31,7 @@ export default [
     },
     {
       key: 2,
+      shelterID: '304dba71-0704-47be-9fb2-1dfafe5ece0b',
       name: 'Max',
       image: 'https://i.imgur.com/JpjACIN.jpeg',
       //description: 'Wesoly i pelen energii Max potrzebuje przyjaciela...',
@@ -43,6 +46,7 @@ export default [
     },
     {
       key: 3,
+      shelterID: '3669426a-10e0-4572-8d25-8f4903e0b3ab',
       name: 'Azor',
       image: 'https://i.imgur.com/rUVcb50.jpeg',
       //description: 'Inteligentny i skrzywdzony Azor potrzebuje ciepła i miłości...',
@@ -57,6 +61,7 @@ export default [
     },
     {
       key: 4,
+      shelterID: '3669426a-10e0-4572-8d25-8f4903e0b3ab',
       name: 'Reksio',
       image: 'https://i.imgur.com/6Wl5jgu.jpeg',
       //description: 'Malutki Reksio szuka nowego miejsca...',

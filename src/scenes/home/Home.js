@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
-import { View, SafeAreaView, StatusBar, StyleSheet, Text, TouchableOpacity, Modal } from 'react-native';
+import { View, SafeAreaView, StatusBar, StyleSheet, Text, TouchableOpacity, Pressable, Modal } from 'react-native';
 import Card from '../../components/Card';
 import CardStack from '../../components/CardStack';
 import pets from '../../../assets/data/pets';
 import breeds from '../../../assets/data/breeds';
 import locations from '../../../assets/data/locations';
 import { colors } from '../../theme';
-import ModalFilterPicker from 'react-native-modal-filter-picker';
-import Icon from 'react-native-vector-icons/FontAwesome5';
+import { FontAwesome5 } from '@expo/vector-icons';
 // import CardFilter from '../../components/CardFilter/CardFilter';
 import { Picker } from '@react-native-picker/picker';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 const Home = ({ navigation }) => {
   const [filterVisible, setFilterVisible] = useState(false);
@@ -46,26 +46,26 @@ const Home = ({ navigation }) => {
       }
       else if(activeBreedFilter != 'any' && activeLocationFilter != 'any') {
         return pet.breed == activeBreedFilter && pet.location == activeLocationFilter;
-      }}).map(function({key, name, image, description, detailedDescription, address, location, breed, age, since, healthCondition}) {
-        return {key, name, image, description, detailedDescription, address, location, breed, age, since, healthCondition};
+      }}).map(function({key, shelterID, name, image, description, detailedDescription, address, location, breed, age, since, healthCondition}) {
+        return {key, shelterID, name, image, description, detailedDescription, address, location, breed, age, since, healthCondition};
       });
       return petsFiltered;
   }
 
   return (
-      <SafeAreaView style={styles.pageContainer}>
+      <View style={styles.pageContainer}>
         <StatusBar animated={true} barStyle='dark-content' backgroundColor={colors.white}/>
         <View style={styles.titleBar}>
           <TouchableOpacity onPress={
             () => navigation.navigate('ProfileScreen')}>
-            <Icon
+            <FontAwesome5
               name="user-circle" 
               size={22} 
               color={colors.black}/>
           </TouchableOpacity>
           <Text style={styles.title}>findo</Text>
           <TouchableOpacity onPress={() => setFilterVisible(true)}>
-            <Icon
+            <FontAwesome5
               name="sliders-h" 
               size={20} 
               color={colors.black}/>
@@ -127,11 +127,13 @@ const Home = ({ navigation }) => {
         <View style={styles.cardContainer}>
         <CardStack 
             data = {setData()}
-            renderItem={({ item }) => <Card pet={item}/>}
+            renderItem={({ item }) => 
+                <Card pet={item}/>
+            }
             onSwipeLeft={onSwipeLeft}
             onSwipeRight={onSwipeRight}/>    
         </View>
-      </SafeAreaView>
+      </View>
   );
 };
 
@@ -142,19 +144,20 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center', 
     alignItems: 'flex-start', 
-    backgroundColor: colors.white,
+    flex: 1,
+    backgroundColor: colors.blue,
   },
   cardContainer: {
+    backgroundColor: colors.purple,
     width: '100%',
-    paddingTop: '2%',
-    height: '93%',
+    height: '100%',
+    flex: 1,
     justifyContent: 'center', 
-    alignItems: 'flex-start', 
-
+    alignItems: 'flex-start',
   },
   title: {
-    fontFamily: 'Oxygen-Regular',
-    fontSize: 28,
+    fontFamily: 'oxygen_regular',
+    fontSize: 32,
     color: colors.blue,
   },
   avatar: {
@@ -167,15 +170,15 @@ const styles = StyleSheet.create({
   },
   titleBar: {
     width: '100%',
-    height: '7%',
+    height: 56,
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 15,
     justifyContent: 'space-between',
     backgroundColor: colors.white,
     paddingVertical: 2,
-    //borderBottomWidth: 1,
-    //borderColor: colors.ultraLightGray,
+    borderBottomWidth: 1,
+    borderColor: colors.ultraLightGray,
   },
   backdrop: {
     height: '100%',
@@ -206,25 +209,25 @@ const styles = StyleSheet.create({
   },
   acceptText: {
     alignSelf: 'flex-end',
-    fontFamily: 'Oxygen-Bold',
+    fontFamily: 'oxygen_bold',
     fontSize: 14,
     color: colors.blue,
     paddingHorizontal: 8,
   },
   cancelText: {
     alignSelf: 'flex-end',
-    fontFamily: 'Oxygen-Regular',
+    fontFamily: 'oxygen_regular',
     fontSize: 14,
     color: colors.gray,
     paddingHorizontal: 8,
   },
   textStyle: {
     color: "white",
-    fontWeight: "bold",
+    fontFamily: 'oxygen_bold',
     textAlign: "center"
   },
   modalText: {
-    fontFamily: 'Oxygen-Bold',
+    fontFamily: 'oxygen_bold',
     alignSelf: 'flex-start',
     color: colors.black,
     fontSize: 16,

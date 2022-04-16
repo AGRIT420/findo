@@ -1,12 +1,12 @@
 import React from 'react';
-import { View, SafeAreaView, Text, StyleSheet, StatusBar, ScrollView, TouchableOpacity, Image } from 'react-native';
+import { View, SafeAreaView, Text, StyleSheet, StatusBar, ScrollView } from 'react-native';
 import pets from '../../../assets/data/pets';
 import FavoriteItem from '../../components/FavoriteItem/FavoriteItem';
 import { colors } from '../../theme';
 
-const Favorites = ({ navigation }) => {
+const Favorites = () => {
     return (
-        <SafeAreaView style={styles.pageContainer}>
+        <View style={styles.pageContainer}>
             <StatusBar animated={true} barStyle='dark-content' backgroundColor={colors.white}/>
             <View style={styles.titleBar}>
                 <Text style={styles.title}>polubione</Text>
@@ -14,22 +14,11 @@ const Favorites = ({ navigation }) => {
             <View style={styles.container}>
                 <ScrollView showsVerticalScrollIndicator={false} style={styles.list}>
                     {pets.map((item, key) => (
-                        <TouchableOpacity key={key} onPress={() => navigation.navigate('DetailsScreen', {
-                            image: item.image,
-                            name: item.name,
-                            address: item.address,
-                            description: item.description,
-                            detailedDescription: item.detailedDescription,
-                            age: item.age,
-                            since: item.since,
-                            healthCondition: item.healthCondition,
-                        })}>
-                            <FavoriteItem key={item.key} pet={item}/>
-                        </TouchableOpacity>
+                        <FavoriteItem key={key} pet={item}/>
                     ))}
                 </ScrollView>
             </View>
-        </SafeAreaView>
+        </View>
     )
 }
 
@@ -41,10 +30,11 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start', 
         alignItems: 'center', 
         flex: 1,
+        backgroundColor: colors.white,
     },
     titleBar: {
         width: '100%',
-        height: '7%',
+        height: 56,
         flexDirection: 'row',
         alignItems: 'center',
         paddingHorizontal: 15,
@@ -55,12 +45,13 @@ const styles = StyleSheet.create({
         borderColor: colors.ultraLightGray,
     },
     title: {
-        fontFamily: 'Oxygen-Regular',
-        fontSize: 28,
+        fontFamily: 'oxygen_regular',
+        fontSize: 32,
         color: colors.blue,
     },
     container: {
-        paddingBottom: 60,
+        paddingBottom: 48,
+        width: '100%',
     },
     list: {
         paddingTop: 10,

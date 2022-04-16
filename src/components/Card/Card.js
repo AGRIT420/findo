@@ -1,31 +1,35 @@
-import React, { useState } from 'react';
-import { Text, ImageBackground, View, StyleSheet, TouchableOpacity, TouchableHighlight, TouchableNativeFeedback, Animated, Pressable } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
+import React from 'react';
+import { Text, ImageBackground, View, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { colors } from '../../theme';
-import FlipCard from 'react-native-flip-card';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+
 const Card = (props) => {
-    const {image, name, age, since, healthCondition, address, description, detailedDescription} = props.pet;
-
-    const askQuestionHandler = () => {
-      console.log('Zadaj pytanie');
-    }
-
-    const makeAppointmentHandler = () => {
-      console.log("Umow sie");
-    }
-
-    const [isFlipped, setIsFlipped] = useState(false);
+    const { shelterID, image, name, address, description, detailedDescription, age, since, healthCondition } = props.pet;
+    
+    const navigation = useNavigation();
 
     return (
       <View style={styles.root}>
-        <FlipCard flipVertical={false} flipHorizontal={true} friction={8}>
+        <TouchableWithoutFeedback onPress={() => navigation.navigate('DetailsScreen', {
+                shelterID: shelterID,
+                image: image,
+                name: name,
+                address: address,
+                description: description,
+                detailedDescription: detailedDescription,
+                age: age,
+                since: since,
+                healthCondition: healthCondition,
+              })}> 
           <View style={styles.face}>
             <ImageBackground source={{ uri: image }} style={styles.image}>
               <LinearGradient
                 start={{x: 0.0, y: 0.0}} end={{x: 1.0, y: 0.0}}
                 locations={[0, 1.0]}
-                colors={['#eeeeee', '#ffffff']}
-                style={[styles.linearGradient, styles.cardBanner]}>
+                colors={[colors.darkPurple, colors.darkBlue]}
+                style={styles.cardBanner}>
                 <View style={styles.cardInner}>
                   <Text style={styles.name}>{name}</Text>
                   <Text style={styles.address}>{address}</Text>
@@ -34,139 +38,67 @@ const Card = (props) => {
               </LinearGradient>
             </ImageBackground>
           </View>
-
-          <View style={styles.back}>
-            <Text style={styles.name}>{name}</Text>
-            <Text style={styles.address}>{address}</Text>
-            <View style={styles.detailsContainer}>
-              <View style={styles.details}>
-                <Text style={styles.detailName}>Wiek: </Text>
-                <Text style={styles.detail}>{age}</Text>
-              </View>
-              <View style={styles.details}>
-                <Text style={styles.detailName}>W schronisku od: </Text>
-                <Text style={styles.detail}>{since}</Text>
-              </View>
-              <View style={styles.details}>
-                <Text style={styles.detailName}>Stan zdrowia: </Text>
-                <Text style={styles.detail}>{healthCondition}</Text>
-              </View>
-            </View>
-            <View style={styles.detailedDescriptionContainer}>
-              <Text style={styles.description}>{detailedDescription}</Text>
-            </View>
-            <View style={styles.actionsContent}>
-              <TouchableOpacity onPress={askQuestionHandler}>
-                <Text style={styles.askQuestionButton}>Zadaj pytanie</Text>  
-              </TouchableOpacity>
-              <Text style={styles.centeredText}>lub</Text>
-              <TouchableNativeFeedback onPress={makeAppointmentHandler}>
-                <LinearGradient
-                  start={{x: 0.0, y: 0.0}} end={{x: 1.0, y: 0.0}}
-                  locations={[0, 1.0]}
-                  colors={[colors.purple, colors.blue]}
-                  style={[styles.linearGradient, styles.appointmentButton]}>
-                    <Text style={styles.appointmentButtonText}>Umów się</Text>
-                </LinearGradient>
-              </TouchableNativeFeedback>
-            </View>
-          </View>
-        </FlipCard>
+          </TouchableWithoutFeedback>
       </View>
     )
 }
 
 const styles = StyleSheet.create({
   root: {
-    width: '98%',
+    width: '100%',
     height: '100%',
   },
   face: {
     width: '100%',
     height: '100%',
-    borderRadius: 25,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-    shadowOpacity: 0.27,
-    shadowRadius: 4.65,
-    elevation: 6, 
-    overflow: 'hidden',
-  },
-  back: {
-    width: '100%',
-    height: '100%',
-    padding: 20,
-    backgroundColor: colors.white,
-    borderRadius: 25,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-    lineHeight: 32,
-    shadowOpacity: 0.27,
-    shadowRadius: 4.65,
-    elevation: 6, 
     overflow: 'hidden',
   },
   image: {
     width: '100%',
     height: '100%',
-    borderRadius: 25,
     overflow: 'hidden',
     alignSelf: 'center',
     justifyContent: 'flex-end',
   },
   cardBanner: {
     width: '100%',
-    opacity: 0.95,
-    borderRadius: 25,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
+    // borderTopLeftRadius: 30,
+    // borderTopRightRadius: 30,
+    opacity: 0.96,
   },
   cardInner: {
     paddingHorizontal: 20,
-    paddingTop: 10,
-    paddingBottom: 15,
+    paddingTop: 15,
+    paddingBottom: 20,
   },
   name: {
-    fontFamily: 'Oxygen-Bold',
-    fontSize: 32,
-    color: colors.black,
+    fontFamily: 'oxygen_bold',
+    fontSize: 36,
+    color: colors.white,
     fontWeight: '600',
-    lineHeight: 44,
+    lineHeight: 56,
   },
   address: {
-    fontFamily: 'Oxygen-Regular',
-    marginTop: -4,
+    fontFamily: 'oxygen_light',
     marginBottom: 4,
-    fontSize: 12,
-    color: colors.gray,
+    fontSize: 14,
+    color: colors.ultraLightGray,
   },
   description: {
-    fontFamily: 'Oxygen-Regular',
-    fontSize: 14,
-    color: colors.black,
-    lineHeight: 24,
+    fontFamily: 'oxygen_regular',
+    fontSize: 16,
+    color: colors.white,
+    lineHeight: 32,
     fontWeight: '300',
   },
   detailName: {
-    fontFamily: 'Oxygen-Regular',
+    fontFamily: 'oxygen_regular',
     fontSize: 12,
     color: colors.black,
     lineHeight: 20,
   },
   detail: {
-    fontFamily: 'Oxygen-Bold',
+    fontFamily: 'oxygen_bold',
     fontSize: 12,
     color: colors.black,
     lineHeight: 20,
@@ -191,11 +123,11 @@ const styles = StyleSheet.create({
     //backgroundColor: colors.gray,
   },
   centeredText: {
-    fontFamily: 'Oxygen-Regular', 
+    fontFamily: 'oxygen_regular', 
     padding: 10,
   },
   askQuestionButton: {
-    fontFamily: 'Oxygen-Bold',
+    fontFamily: 'oxygen_bold',
     color: colors.darkPurple,
     textDecorationLine: 'underline',
     fontSize: 15,
@@ -216,7 +148,7 @@ const styles = StyleSheet.create({
     elevation: 6, 
   },
   appointmentButtonText: {
-    fontFamily: 'Oxygen-Regular',
+    fontFamily: 'oxygen_regular',
     color: colors.white,
     textAlign: 'center',
     padding: 10, 

@@ -1,27 +1,42 @@
 import React from 'react';
-import { Text, Image, View, StyleSheet } from 'react-native';
+import { Text, Image, View, StyleSheet, TouchableOpacity } from 'react-native';
 import { colors } from '../../theme';
+import { useNavigation } from '@react-navigation/native';
 
 const FavoriteItem = (props) => {
-    const { image, name, address, description } = props.pet;
+    const { shelterID, image, name, address, description, detailedDescription, age, since, healthCondition } = props.pet;
     
+    const navigation = useNavigation();
+
     return (
       <View style={styles.root}>
-          <View style={styles.face}>
-            <Image source={{ uri: image }} style={styles.image}/>
-            <View style={styles.data}>
-                <Text style={styles.name}>{name}</Text>
-                <Text style={styles.address}>{address}</Text>
-                <Text style={styles.description}>{description}</Text>
+        <TouchableOpacity onPress={() => navigation.navigate('DetailsScreen', {
+          shelterID: shelterID,
+          image: image,
+          name: name,
+          address: address,
+          description: description,
+          detailedDescription: detailedDescription,
+          age: age,
+          since: since,
+          healthCondition: healthCondition,
+          })}>
+            <View style={styles.face}>
+              <Image source={{ uri: image }} style={styles.image}/>
+              <View style={styles.data}>
+                  <Text style={styles.name}>{name}</Text>
+                  <Text style={styles.address}>{address}</Text>
+                  <Text style={styles.description}>{description}</Text>
+              </View>
             </View>
-          </View>
+          </TouchableOpacity>
       </View>
     )
 }
 
 const styles = StyleSheet.create({
   root: {
-    width: '98%',
+    width: '100%',
     height: 150,
     justifyContent: 'center',
     alignItems: 'center',
@@ -30,53 +45,44 @@ const styles = StyleSheet.create({
   face: {
     width: '100%',
     height: '100%',
-    borderRadius: 25,
+    borderRadius: 15,
     backgroundColor: colors.white,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.27,
-    shadowRadius: 1.65,
     borderWidth: 1,
     borderColor: colors.ultraLightGray,
     flexDirection: 'row',
-    overflow: 'hidden',
   },
   image: {
     width: 150,
     height: 150,
-    borderRadius: 25,
-    overflow: 'hidden',
+    borderRadius: 15,
     alignSelf: 'flex-start',
     justifyContent: 'flex-end',
   },
   data: {
     width: '55%',
     alignContent: 'flex-end',
+    paddingVertical: 2,
     paddingHorizontal: 10,
   },
   name: {
-    fontFamily: 'Oxygen-Bold',
-    fontSize: 28,
+    fontFamily: 'oxygen_bold',
+    fontSize: 32,
     color: colors.black,
-    fontWeight: '600',
-    lineHeight: 44,
+    lineHeight: 48,
   },
   address: {
-    fontFamily: 'Oxygen-Regular',
+    fontFamily: 'oxygen_regular',
     marginTop: -4,
-    marginBottom: 4,
-    fontSize: 10,
+    marginBottom: 6,
+    fontSize: 12,
     color: colors.gray,
   },
   description: {
     height: 70,
-    fontFamily: 'Oxygen-Regular',
-    fontSize: 12,
+    fontFamily: 'oxygen_regular',
+    fontSize: 16,
     color: colors.black,
-    lineHeight: 14,
+    lineHeight: 16,
   },
 })
 

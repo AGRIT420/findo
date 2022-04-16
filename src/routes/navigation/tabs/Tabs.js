@@ -1,13 +1,11 @@
 import React from "react";
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { colors } from "../../../theme";
 import { HomeNavigator, FavoritesNavigator, MessagesNavigator } from "../stacks";
-import Icon from 'react-native-vector-icons/Foundation';
+import { Foundation } from '@expo/vector-icons';
 
 const Tab = createBottomTabNavigator()
-
-//const slidersIcon = ;
 
 const TabNavigator = (props) => (
     <Tab.Navigator
@@ -16,24 +14,24 @@ const TabNavigator = (props) => (
                 switch(route.name) {
                     case 'Przeglądaj':
                         return(
-                            <Icon
+                            <Foundation
                                 name="home" 
                                 size={24} 
-                                color={focused ? colors.blue : colors.lightGray}/>
+                                color={focused ? colors.darkBlue : colors.lightGray}/>
                         )
                     case 'Ulubione':
                         return(
-                            <Icon
+                            <Foundation
                                 name="heart" 
                                 size={24} 
-                                color={focused ? colors.blue : colors.lightGray}/>
+                                color={focused ? colors.darkBlue : colors.lightGray}/>
                         )
                     case 'Wiadomości':
                         return(
-                            <Icon 
+                            <Foundation
                                 name="comments" 
                                 size={24} 
-                                color={focused ? colors.blue : colors.lightGray}/>
+                                color={focused ? colors.darkBlue : colors.lightGray}/>
                         )
                     default:
                         return <View/>

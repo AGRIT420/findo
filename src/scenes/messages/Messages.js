@@ -39,13 +39,13 @@ const styles = StyleSheet.create({
         backgroundColor: colors.white,
     },
     title: {
-        fontFamily: 'Oxygen-Regular',
-        fontSize: 28,
+        fontFamily: 'oxygen_regular',
+        fontSize: 32,
         color: colors.blue,
       },
     titleBar: {
         width: '100%',
-        height: '7%',
+        height: 56,
         flexDirection: 'row',
         alignItems: 'center',
         paddingHorizontal: 15,

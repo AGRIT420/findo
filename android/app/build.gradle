@@ -195,6 +195,9 @@ dependencies {
 
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
 
+    // implementation 'com.amplifyframework:aws-api:1.35.0'
+    // implementation 'com.amplifyframework:aws-datastore:1.35.0'
+
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
         exclude group:'com.facebook.fbjni'
     }

@@ -24,6 +24,11 @@ export const HomeNavigator = () => (
         />
 
         <Stack.Screen
+            name="DetailsScreen"
+            component={Details}
+        />
+
+        <Stack.Screen
             name="ProfileScreen"
             component={Profile}
         />

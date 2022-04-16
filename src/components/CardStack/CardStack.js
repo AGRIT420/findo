@@ -8,11 +8,13 @@ import Animated, {
   useDerivedValue,
   interpolate,
   withSpring,
-  runOnJS
+  runOnJS,
+  withTiming,
+  Easing
  } from 'react-native-reanimated';
 import { colors } from '../../theme';
 
-const ROTATION = 50;
+const ROTATION = 60;
 const SWIPE_VELOCITY = 800;
 
 const CardStack = (props) => {
@@ -33,15 +35,17 @@ const CardStack = (props) => {
   const cardStyle = useAnimatedStyle(() => ({
     transform: [
       { translateX: translateX.value, },
-      { rotate: rotate.value, }
-    ]
+      // { translateX: translateX.value / 3.6, }, // book effect
+      { rotateY: rotate.value, }
+    ],
+    opacity: interpolate(translateX.value, [-hiddenTranslateX, 0, hiddenTranslateX], [0.9, 1, 0.9])
   }));
 
   const nextCardStyle = useAnimatedStyle(() => ({
     transform: [
-      { scale: interpolate(translateX.value, [-hiddenTranslateX, 0, hiddenTranslateX], [1, 0.8, 1]) }
+      { scale: interpolate(translateX.value, [-hiddenTranslateX, 0, hiddenTranslateX], [1, 0.95, 1]) }
     ],
-    opacity: interpolate(translateX.value, [-hiddenTranslateX, 0, hiddenTranslateX], [1, 0.7, 1])
+    opacity: interpolate(translateX.value, [-hiddenTranslateX, 0, hiddenTranslateX], [1, 0.95, 1])
   }));
   
   const gestureHandler = useAnimatedGestureHandler({
@@ -53,14 +57,14 @@ const CardStack = (props) => {
     },
     onEnd: (event) => {
       if (Math.abs(event.velocityX) < SWIPE_VELOCITY) {
-        translateX.value = withSpring(0);
+        translateX.value = withTiming(0, { duration: 50, easing: Easing.bezier(0.25, 0.1, 0.25, 1) });
         return;
       }
-      translateX.value = withSpring(
+      translateX.value = withTiming(
         hiddenTranslateX * Math.sign(event.velocityX), 
         {}, 
         () => runOnJS(setCurrentIndex)(currentIndex + 1)
-      );
+      , { duration: 50, easing: Easing.bezier(0.25, 0.1, 0.25, 1) });
       const onSwipe = event.velocityX > 0 ? onSwipeRight : onSwipeLeft;
       onSwipe && runOnJS(onSwipe)(currentPet);
     }
@@ -104,7 +108,7 @@ const CardStack = (props) => {
 const styles = StyleSheet.create({
   root: {
     width: '100%',
-    height: '90%',
+    height: '100%',
     justifyContent: 'flex-start', 
     alignItems: 'center', 
     flex: 1,
@@ -112,7 +116,7 @@ const styles = StyleSheet.create({
   },
   animatedCard: {
     width: '100%',
-    height: '90%',
+    height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -124,7 +128,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
   backText: {
-    fontFamily: 'Oxygen-Regular',
+    fontFamily: 'oxygen_regular',
+    fontSize: 16,
     position: 'absolute',
     alignSelf: 'center',
     top: '45%',
@@ -135,7 +140,8 @@ const styles = StyleSheet.create({
     top: '49%',
   },
   reloadText: {
-    fontFamily: 'Oxygen-Bold',
+    fontFamily: 'oxygen_bold',
+    fontSize: 16,
     color: colors.blue,
   },
 })

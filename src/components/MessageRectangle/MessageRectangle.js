@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { colors } from '../../theme';
+import { LinearGradient } from 'expo-linear-gradient';
 import moment from 'moment-timezone';
 import 'moment/locale/pl';
 
@@ -13,15 +14,19 @@ const MessageRectangle = (props) => {
 
     return (
         <View style={styles.container}>
-            <View style={[styles.box, {
-                backgroundColor: isMyMessage() ? colors.darkBlue : colors.ultraLightGray,
-                marginLeft: isMyMessage() ? 60 : 0,
-                marginRight: isMyMessage() ? 0 : 60,
-                borderTopLeftRadius: isMyMessage() ? 16 : 0,
-                borderTopRightRadius: isMyMessage() ? 0 : 16,
-                borderBottomLeftRadius: isMyMessage() ? 16 : 16,
-                borderBottomRightRadius: isMyMessage() ? 16 : 16,
-            }]}>
+            <LinearGradient
+                start={{x: 0.0, y: 0.0}} end={{x: 1.0, y: 0.0}}
+                locations={[0, 1.0]}
+                colors={isMyMessage() ? [colors.darkBlue, colors.purple] : [colors.ultraLightGray, colors.ultraLightGray]}
+                style={[styles.box, {
+                    backgroundColor: isMyMessage() ? colors.darkBlue : colors.ultraLightGray,
+                    marginLeft: isMyMessage() ? 60 : 0,
+                    marginRight: isMyMessage() ? 0 : 60,
+                    borderTopLeftRadius: isMyMessage() ? 16 : 0,
+                    borderTopRightRadius: isMyMessage() ? 0 : 16,
+                    borderBottomLeftRadius: isMyMessage() ? 16 : 16,
+                    borderBottomRightRadius: isMyMessage() ? 16 : 16,
+                }]}>
                 {!isMyMessage() && <Text style={styles.username}>{message.user.name}</Text>}
                 <Text style={[styles.messageText, {
                     color: isMyMessage() ? colors.white : colors.black,
@@ -34,7 +39,7 @@ const MessageRectangle = (props) => {
                             .startOf('second')
                             .fromNow()}
                 </Text>
-            </View>
+            </LinearGradient>
          </View>
     )
 }
@@ -51,22 +56,22 @@ const styles = StyleSheet.create({
         elevation: 2,
     },
     username: {
-        fontFamily: 'Oxygen-Bold',
+        fontFamily: 'oxygen_bold',
         color: colors.black,
-        fontSize: 12,
-        lineHeight: 12,
+        fontSize: 14,
+        lineHeight: 14,
         marginBottom: 2,
     },
     messageText: {
-        fontFamily: 'Oxygen-Regular',
+        fontFamily: 'oxygen_regular',
         color: colors.black,
-        fontSize: 14,
+        fontSize: 16,
     },
     time: {
-        fontFamily: 'Oxygen-Light',
+        fontFamily: 'oxygen_light',
         color: colors.gray,
         alignSelf: 'flex-end',
-        fontSize: 10,
+        fontSize: 12,
     },
 })
 

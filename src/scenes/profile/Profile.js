@@ -2,7 +2,7 @@ import React from 'react';
 import { View, SafeAreaView, Text, StyleSheet, Image, StatusBar, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 import { colors } from '../../theme';
-import Icon from 'react-native-vector-icons/FontAwesome5';
+import { FontAwesome5 } from '@expo/vector-icons';
 
 const Profile = ({ navigation }) => {
     return (
@@ -12,7 +12,7 @@ const Profile = ({ navigation }) => {
                 <View style={styles.iconContainer}>
                     <TouchableOpacity onPress={
                         () => navigation.goBack()}>
-                        <Icon
+                        <FontAwesome5
                         name="chevron-left" 
                         size={22} 
                         color={colors.black}
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     },
     titleBar: {
         width: '100%',
-        height: '7%',
+        height: 56,
         flexDirection: 'row',
         alignItems: 'center',
         paddingHorizontal: 15,
@@ -59,8 +59,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     title: {
-        fontFamily: 'Oxygen-Regular',
-        fontSize: 28,
+        fontFamily: 'oxygen_regular',
+        fontSize: 32,
         color: colors.blue,
     },
     icon: {

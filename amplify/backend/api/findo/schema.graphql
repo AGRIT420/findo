@@ -1,0 +1,28 @@
+type User 
+@model 
+@aws_iam 
+@auth(rules: [{ allow: owner }]) {
+  id: ID!
+  name: String!
+  imageUri: String
+  chatRoomUser: [ChatRoomUser] @hasMany(indexName: "byUser", fields: ["id"])
+}
+
+type ChatRoomUser 
+@model 
+@aws_iam 
+@auth(rules: [{ allow: owner }]) {
+  id: ID!
+  userID: ID! @index(name: "byUser", sortKeyFields: ["chatRoomID"])
+  chatRoomID: ID! @index(name: "byChatRoom", sortKeyFields: ["userID"])
+  user: User @hasOne(fields: ["userID"])
+  chatRoom: ChatRoom @hasOne(fields: ["chatRoomID"])
+}
+
+type ChatRoom 
+@model 
+@aws_iam 
+@auth(rules: [{ allow: owner }]) {
+  id: ID!
+  chatRoomUsers: [ChatRoomUser] @hasMany(indexName: "byChatRoom", fields: ["id"])
+}

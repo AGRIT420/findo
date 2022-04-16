@@ -1,0 +1,11 @@
+{
+  "AppSyncApiName": "findo",
+  "DynamoDBBillingMode": "PAY_PER_REQUEST",
+  "DynamoDBEnableServerSideEncryption": false,
+  "AuthCognitoUserPoolId": {
+    "Fn::GetAtt": [
+      "authfindocf4b4d32",
+      "Outputs.UserPoolId"
+    ]
+  }
+}

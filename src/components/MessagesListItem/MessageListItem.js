@@ -55,20 +55,20 @@ const styles = StyleSheet.create({
     },
     username: {
         flex: 1,
-        fontFamily: 'Oxygen-Bold',
-        fontSize: 14,
+        fontFamily: 'oxygen_bold',
+        fontSize: 16,
         color: colors.black,
     },
     lastMessage: {
         flex: 1,
-        fontFamily: 'Oxygen-Regular',
-        fontSize: 14,
+        fontFamily: 'oxygen_regular',
+        fontSize: 16,
         color: colors.gray,
     },
     time: {
         paddingTop: 3,
-        fontFamily: 'Oxygen-Light',
-        fontSize: 12,
+        fontFamily: 'oxygen_light',
+        fontSize: 14,
         color: colors.gray,
     },
 })

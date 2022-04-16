@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity } from 'react-native';
 import { colors } from '../../theme';
-import Icon from 'react-native-vector-icons/Entypo';
-import Icon2 from 'react-native-vector-icons/Ionicons';
+import { Entypo, Ionicons } from '@expo/vector-icons';
 //import { TextInput } from 'react-native-gesture-handler';
 
 const MessageInputBox = () => {
@@ -10,7 +9,7 @@ const MessageInputBox = () => {
 
     const onPress = () => {
         if(message) {
-           console.warn("Message: ", message);
+           console.log("Message: ", message);
            setMessage('');
         }
     }
@@ -18,7 +17,7 @@ const MessageInputBox = () => {
     return (
         <View style={styles.container}>
             <View style={styles.mainContainer}>
-                <Icon name="emoji-happy" size={24} color={colors.gray} style={styles.emojiIcon}/>
+                <Entypo name="emoji-happy" size={24} color={colors.gray} style={styles.emojiIcon}/>
                 <TextInput
                     placeholder='Wprowadź wiadomość'
                     style={styles.textInput}
@@ -30,7 +29,7 @@ const MessageInputBox = () => {
             {message != '' && 
                 <TouchableOpacity onPress={onPress}>
                     <View style={styles.button}>
-                        <Icon2 name="send" size={22} color={colors.white}/>
+                        <Ionicons name="send" size={22} color={colors.white}/>
                     </View>
                 </TouchableOpacity>
             }
@@ -50,7 +49,7 @@ const styles = StyleSheet.create({
         backgroundColor: colors.ultraLightGray,
         borderRadius: 50,
         marginRight: 10,
-        height: 44,
+        height: 46,
         flex: 1,
         alignItems: 'center',
     },
@@ -60,6 +59,8 @@ const styles = StyleSheet.create({
     textInput: {
         flex: 1,
         marginRight: 10,
+        fontFamily: 'oxygen_regular',
+        fontSize: 16,
     },
     button: {
         backgroundColor: colors.darkBlue,

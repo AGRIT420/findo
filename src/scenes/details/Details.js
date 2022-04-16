@@ -1,11 +1,14 @@
 import React from 'react';
 import { View, SafeAreaView, Text, StyleSheet, StatusBar, ScrollView, TouchableNativeFeedback, TouchableOpacity, Image } from 'react-native';
 import PropTypes from 'prop-types';
-import LinearGradient from 'react-native-linear-gradient';
+import { LinearGradient } from 'expo-linear-gradient';
 import { colors } from '../../theme';
-import Icon from 'react-native-vector-icons/FontAwesome5';
+import { FontAwesome5 } from '@expo/vector-icons';
+import { API, graphqlOperation, Auth } from "aws-amplify";
+import { createChatRoom, createChatRoomUser, } from '../../graphql/mutations.js';
 
 const Details = ({ route, navigation }) => {
+    const shelterID = route?.params?.shelterID
     const image = route?.params?.image
     const name = route?.params?.name
     const address = route?.params?.address
@@ -14,9 +17,39 @@ const Details = ({ route, navigation }) => {
     const age = route?.params?.age
     const since = route?.params?.since
     const healthCondition = route?.params?.healthCondition
+    const user = route?.params?.user
 
-    const askQuestionHandler = () => {
-        console.log('Zadaj pytanie');
+    const askQuestionHandler = async () => {
+        // console.log('Zadaj pytanie');
+        try {
+            const newChatRoomData = await API.graphql(graphqlOperation(createChatRoom, { input: {} }))
+            if(!newChatRoomData.data) {
+                console.log('Failed to create a chat room');
+                return;
+            }
+            const newChatRoom = newChatRoomData.data.createChatRoom;
+            
+            await API.graphql(graphqlOperation(createChatRoomUser, {
+                input: {
+                    userID: shelterID,
+                    chatRoomID: newChatRoom.id,
+                }
+            })) 
+
+            const userInfo = await Auth.currentAuthenticatedUser();
+
+            await API.graphql(graphqlOperation(createChatRoomUser, {
+                input: {
+                    userID: userInfo.attributes.sub,
+                    chatRoomID: newChatRoom.id,
+                }
+            }))
+
+
+
+        } catch (e) {
+            console.error(e);
+        }
     }
   
       const makeAppointmentHandler = () => {
@@ -30,7 +63,7 @@ const Details = ({ route, navigation }) => {
                 <View style={styles.iconContainer}>
                     <TouchableOpacity onPress={
                         () => navigation.goBack()}>
-                        <Icon
+                        <FontAwesome5
                         name="chevron-left" 
                         size={22} 
                         color={colors.black}
@@ -132,7 +165,7 @@ const styles = StyleSheet.create({
     },
     titleBar: {
         width: '100%',
-        height: '7%',
+        height: 56,
         flexDirection: 'row',
         alignItems: 'center',
         paddingHorizontal: 15,
@@ -150,8 +183,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     title: {
-        fontFamily: 'Oxygen-Regular',
-        fontSize: 28,
+        fontFamily: 'oxygen_regular',
+        fontSize: 32,
         color: colors.blue,
     },
     icon: {
@@ -164,32 +197,32 @@ const styles = StyleSheet.create({
         paddingTop: 8,
     },
     name: {
-        fontFamily: 'Oxygen-Bold',
-        fontSize: 32,
+        fontFamily: 'oxygen_bold',
+        fontSize: 42,
         color: colors.black,
         lineHeight: 44,
     },
     address: {
-        fontFamily: 'Oxygen-Regular',
+        fontFamily: 'oxygen_regular',
         marginBottom: 4,
-        fontSize: 12,
+        fontSize: 16,
         color: colors.gray,
     },
     description: {
-        fontFamily: 'Oxygen-Regular',
-        fontSize: 14,
+        fontFamily: 'oxygen_regular',
+        fontSize: 18,
         color: colors.black,
         lineHeight: 24,
     },
     detailName: {
-        fontFamily: 'Oxygen-Regular',
-        fontSize: 12,
+        fontFamily: 'oxygen_regular',
+        fontSize: 16,
         color: colors.black,
         lineHeight: 20,
     },
     detail: {
-        fontFamily: 'Oxygen-Bold',
-        fontSize: 12,
+        fontFamily: 'oxygen_bold',
+        fontSize: 16,
         color: colors.black,
         lineHeight: 20,
     },
@@ -214,18 +247,18 @@ const styles = StyleSheet.create({
         //backgroundColor: colors.gray,
     },
     centeredText: {
-        fontFamily: 'Oxygen-Regular', 
+        fontFamily: 'oxygen_regular', 
+        fontSize: 16,
         padding: 10,
     },
     askQuestionButton: {
-        fontFamily: 'Oxygen-Bold',
+        fontFamily: 'oxygen_bold',
         color: colors.darkPurple,
-        textDecorationLine: 'underline',
-        fontSize: 15,
+        fontSize: 20,
     },
     appointmentButton: {
         width: 240,
-        height: 40,
+        height: 50,
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 25,
@@ -239,7 +272,8 @@ const styles = StyleSheet.create({
         elevation: 6, 
     },
     appointmentButtonText: {
-        fontFamily: 'Oxygen-Regular',
+        fontFamily: 'oxygen_regular',
+        fontSize: 18,
         color: colors.white,
         textAlign: 'center',
         padding: 10, 
