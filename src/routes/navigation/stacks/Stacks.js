@@ -70,3 +70,21 @@ export const MessagesNavigator = () => (
 
     </Stack.Navigator>
 )
+
+export const DetailsNavigator = () => (
+    <Stack.Navigator
+        initialRouteName="DetailsScreen"
+        screenOptions={navigationProps}
+    >
+        <Stack.Screen
+            name="DetailsScreen"
+            component={Details}
+        />
+
+        <Stack.Screen
+            name="ConversationScreen"
+            component={Conversation}
+        />
+
+    </Stack.Navigator>
+)

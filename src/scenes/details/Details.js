@@ -5,7 +5,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { colors } from '../../theme';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { API, graphqlOperation, Auth } from "aws-amplify";
-import { createChatRoom, createChatRoomUser, } from '../../graphql/mutations.js';
+import { createChatRoom, createChatRoomUser, } from '../../graphql/mutations';
+import { listChatRoomUsers, getUser, getChatRoom, getChatRoomUser } from '../../graphql/queries';
 
 const Details = ({ route, navigation }) => {
     const shelterID = route?.params?.shelterID
@@ -13,7 +14,6 @@ const Details = ({ route, navigation }) => {
     const name = route?.params?.name
     const address = route?.params?.address
     const description = route?.params?.description
-    const detailedDescription = route?.params?.detailedDescription
     const age = route?.params?.age
     const since = route?.params?.since
     const healthCondition = route?.params?.healthCondition
@@ -22,13 +22,33 @@ const Details = ({ route, navigation }) => {
     const askQuestionHandler = async () => {
         // console.log('Zadaj pytanie');
         try {
+            const userInfo = await Auth.currentAuthenticatedUser();
+
+            const chatRoomsUser1 = await API.graphql(graphqlOperation(listChatRoomUsers, {filter: {userID: {contains: userInfo.attributes.sub}}}))
+            const chatRoomsUser2 = await API.graphql(graphqlOperation(listChatRoomUsers, {filter: {userID: {contains: shelterID}}}))
+            
+            for(let i = 0; i < chatRoomsUser1.data.listChatRoomUsers.items.length; i++) {
+                for(let j = 0; j < chatRoomsUser2.data.listChatRoomUsers.items.length; j++) {
+                    if(chatRoomsUser1.data.listChatRoomUsers.items[i].chatRoom.id === chatRoomsUser2.data.listChatRoomUsers.items[j].chatRoom.id) {
+                        console.log("Chat room already exists");
+                        navigation.navigate('ConversationScreen', {
+                            id: chatRoomsUser1.data.listChatRoomUsers.items[i].chatRoom.id,
+                            username: "test",
+                        })
+                        return;
+                    }
+                }
+            }
+        
             const newChatRoomData = await API.graphql(graphqlOperation(createChatRoom, { input: {} }))
+
             if(!newChatRoomData.data) {
                 console.log('Failed to create a chat room');
                 return;
             }
-            const newChatRoom = newChatRoomData.data.createChatRoom;
             
+            const newChatRoom = newChatRoomData.data.createChatRoom;
+
             await API.graphql(graphqlOperation(createChatRoomUser, {
                 input: {
                     userID: shelterID,
@@ -36,14 +56,17 @@ const Details = ({ route, navigation }) => {
                 }
             })) 
 
-            const userInfo = await Auth.currentAuthenticatedUser();
-
             await API.graphql(graphqlOperation(createChatRoomUser, {
                 input: {
                     userID: userInfo.attributes.sub,
                     chatRoomID: newChatRoom.id,
                 }
             }))
+
+            navigation.navigate('ConversationScreen', {
+                id: newChatRoom.id,
+                username: "test",
+            })
 
 
 
@@ -92,7 +115,7 @@ const Details = ({ route, navigation }) => {
                     </View>
                 </View>
                 <View style={styles.detailedDescriptionContainer}>
-                    <Text style={styles.description}>{detailedDescription}</Text>
+                    <Text style={styles.description}>{description}</Text>
                 </View>
                 <View style={styles.actionsContainer}>
                     <TouchableOpacity onPress={askQuestionHandler}>

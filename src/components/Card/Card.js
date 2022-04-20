@@ -6,7 +6,7 @@ import { colors } from '../../theme';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 const Card = (props) => {
-    const { shelterID, image, name, address, description, detailedDescription, age, since, healthCondition } = props.pet;
+    const { shelterID, image, name, address, description, age, since, healthCondition } = props.pet;
     
     const navigation = useNavigation();
 
@@ -18,7 +18,6 @@ const Card = (props) => {
                 name: name,
                 address: address,
                 description: description,
-                detailedDescription: detailedDescription,
                 age: age,
                 since: since,
                 healthCondition: healthCondition,
@@ -33,7 +32,7 @@ const Card = (props) => {
                 <View style={styles.cardInner}>
                   <Text style={styles.name}>{name}</Text>
                   <Text style={styles.address}>{address}</Text>
-                  <Text style={styles.description}>{description}</Text>
+                  <Text numberOfLines={1} style={styles.description}>{description}</Text>
                 </View>
               </LinearGradient>
             </ImageBackground>

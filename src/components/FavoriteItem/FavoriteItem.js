@@ -4,7 +4,7 @@ import { colors } from '../../theme';
 import { useNavigation } from '@react-navigation/native';
 
 const FavoriteItem = (props) => {
-    const { shelterID, image, name, address, description, detailedDescription, age, since, healthCondition } = props.pet;
+    const { shelterID, image, name, address, description, age, since, healthCondition } = props.pet;
     
     const navigation = useNavigation();
 
@@ -16,7 +16,6 @@ const FavoriteItem = (props) => {
           name: name,
           address: address,
           description: description,
-          detailedDescription: detailedDescription,
           age: age,
           since: since,
           healthCondition: healthCondition,
@@ -26,7 +25,7 @@ const FavoriteItem = (props) => {
               <View style={styles.data}>
                   <Text style={styles.name}>{name}</Text>
                   <Text style={styles.address}>{address}</Text>
-                  <Text style={styles.description}>{description}</Text>
+                  <Text numberOfLines={3} style={styles.description}>{description}</Text>
               </View>
             </View>
           </TouchableOpacity>

@@ -1,12 +1,35 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, SafeAreaView, Text, StyleSheet, StatusBar, Image, TouchableOpacity } from 'react-native';
 import pets from '../../../assets/data/pets';
 import { colors } from '../../theme';
 import MessagesListItem from '../../components/MessagesListItem/MessageListItem';
 import rooms from '../../../assets/data/rooms';
 import { FlatList } from 'react-native-gesture-handler';
+import { API, graphqlOperation, Auth } from 'aws-amplify';
+import { getUser } from './queries';
 
 const Messages = ({ navigation }) => {
+
+    const [chatRooms, setChatRooms] = useState([]);
+
+    useEffect( () => {
+        const fetchChatRooms = async () => {
+            try {
+                const userInfo = await Auth.currentAuthenticatedUser();
+
+                const userData = await API.graphql(graphqlOperation(getUser, {id: userInfo.attributes.sub}));
+
+                setChatRooms(userData.data.getUser.chatRoomUser.items)
+
+                console.log(userData);
+
+            } catch (e) {
+                console.log(e);
+            }
+        }
+        fetchChatRooms();
+    }, []);
+
     return (
         <SafeAreaView style={styles.pageContainer}>
         <StatusBar animated={true} barStyle='dark-content' backgroundColor={colors.white}/>
@@ -15,15 +38,9 @@ const Messages = ({ navigation }) => {
         </View>
             <FlatList 
                 style={styles.list}
-                data={rooms} 
+                data={chatRooms} 
                 renderItem={({ item }) => 
-                    <TouchableOpacity onPress={() => navigation.navigate('ConversationScreen', {
-                        id: item.id,
-                        username: item.users[1].name,
-                        imageUri: item.users[1].imageUri,
-                    })}>
-                        <MessagesListItem room={item}/>
-                    </TouchableOpacity>}
+                    <MessagesListItem chatRoom={item.chatRoom}/>}
                 keyExtractor={(item) => item.id}
             />
         </SafeAreaView>

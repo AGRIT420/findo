@@ -47,7 +47,6 @@ const App = () => {
                 await API.graphql(graphqlOperation(createUser, {input: newUser}))
             }
         }
-        
         fetchUser();
     }, [])
 

@@ -1,31 +1,57 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, SafeAreaView, Text, StyleSheet, Image } from 'react-native';
 import { colors } from '../../theme';
+import { useNavigation } from '@react-navigation/native';
 import moment from 'moment-timezone';
 import 'moment/locale/pl';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { Auth } from 'aws-amplify';
 
-const MessagesListItem = (props, { navigation }) => {
-    const { room } = props;
-    const user = room.users[1];
+const MessagesListItem = (props) => {
+    const { chatRoom } = props;
+    const [ otherUser, setOtherUser ] = useState(null);
 
+    const navigation = useNavigation();
+
+    useEffect( () => {
+        const getOtherUser = async () => {
+            const userInfo = await Auth.currentAuthenticatedUser();
+            if (chatRoom.chatRoomUsers.items[0].user.id === userInfo.attributes.sub) {
+                setOtherUser(chatRoom.chatRoomUsers.items[1].user);
+            } else {
+                setOtherUser(chatRoom.chatRoomUsers.items[0].user);
+            }
+        }
+        getOtherUser();
+    }, [])
+
+    if (!otherUser) {
+        return null;
+    }
 
     return (
-        <View style={styles.container}>
-            <View style={styles.leftContainer}>
-                <Image source={{ uri: user.imageUri }} style={styles.avatar}/>
-                <View style={styles.midContainer}>
-                    <Text numberOfLines={1} style={styles.username}>{user.name}</Text>
-                    <Text numberOfLines={1} style={styles.lastMessage}>{room.lastMessage.content}</Text>
-                    <Text style={styles.time}> 
-                        {moment(room.lastMessage.createdAt, 'YYYY-MM-DD HH:mm:ss', 'pl')
-                        .subtract(12, 'hours')
-                        .tz('Europe/Warsaw')
-                        .startOf('second')
-                        .fromNow()}
-                    </Text>
-                 </View>
+        <TouchableOpacity onPress={() => navigation.navigate('ConversationScreen', {
+            id: chatRoom.id,
+            username: otherUser.name,
+            imageUri: otherUser.imageUri,
+        })}>
+            <View style={styles.container}>
+                <View style={styles.leftContainer}>
+                    <Image source={{ uri: otherUser.imageUri }} style={styles.avatar}/>
+                    <View style={styles.midContainer}>
+                        <Text numberOfLines={1} style={styles.username}>{otherUser.name}</Text>
+                        <Text numberOfLines={1} style={styles.lastMessage}>{chatRoom.lastMessage ? chatRoom.lastMessage.content : ""}</Text>
+                        <Text style={styles.time}> 
+                            {chatRoom.lastMessage && moment(chatRoom.lastMessage.createdAt, 'YYYY-MM-DD HH:mm:ss', 'pl')
+                            .subtract(12, 'hours')
+                            .tz('Europe/Warsaw')
+                            .startOf('second')
+                            .fromNow()}
+                        </Text>
+                    </View>
+                </View>
             </View>
-         </View>
+         </TouchableOpacity>
     )
 }
 
