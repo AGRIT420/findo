@@ -1,16 +1,33 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity } from 'react-native';
 import { colors } from '../../theme';
 import { Entypo, Ionicons } from '@expo/vector-icons';
-//import { TextInput } from 'react-native-gesture-handler';
+import { API, Auth, graphqlOperation } from 'aws-amplify';
+import { createMessage } from '../../graphql/mutations';
 
-const MessageInputBox = () => {
+const MessageInputBox = (props) => {
+    const { chatRoomID } = props;
     const [message, setMessage] = useState('');
+    const [myUserID, setMyUserID] = useState(null);
 
-    const onPress = () => {
+    useEffect( () => {
+        const fetchUser = async () => {
+            const userInfo = await Auth.currentAuthenticatedUser();
+            setMyUserID(userInfo.attributes.sub);
+        
+        }
+        fetchUser();
+    }, [])
+
+
+    const onPress = async () => {
         if(message) {
-           console.log("Message: ", message);
-           setMessage('');
+            try {
+                await API.graphql(graphqlOperation(createMessage, {input: {content: message, userID: myUserID, chatRoomID: chatRoomID}}));
+                setMessage('');
+            } catch(e) {
+               console.log(e);
+            }
         }
     }
 

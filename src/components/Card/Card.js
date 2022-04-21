@@ -46,17 +46,23 @@ const styles = StyleSheet.create({
   root: {
     width: '100%',
     height: '100%',
+    backgroundColor: colors.white,
+    borderWidth: 0.5,
+    borderRadius: 20,
+    borderColor: colors.ultraLightGray,
   },
   face: {
     width: '100%',
     height: '100%',
-    overflow: 'hidden',
+    padding: 10,
+    borderRadius: 20,
   },
   image: {
     width: '100%',
     height: '100%',
     overflow: 'hidden',
     alignSelf: 'center',
+    borderRadius: 20,
     justifyContent: 'flex-end',
   },
   cardBanner: {

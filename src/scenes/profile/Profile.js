@@ -1,10 +1,46 @@
-import React from 'react';
-import { View, SafeAreaView, Text, StyleSheet, Image, StatusBar, TouchableOpacity } from 'react-native';
+import React, { useEffect, useFocusEffect, useState } from 'react';
+import { View, SafeAreaView, Text, StyleSheet, Image, StatusBar, TouchableOpacity, TouchableHighlight, TouchableNativeFeedback } from 'react-native';
 import PropTypes from 'prop-types';
+import { LinearGradient } from 'expo-linear-gradient';
 import { colors } from '../../theme';
 import { FontAwesome5 } from '@expo/vector-icons';
+import { useIsFocused } from '@react-navigation/native';
+import { API, graphqlOperation, Auth } from 'aws-amplify';
+import { getUser } from '../../graphql/queries';
 
 const Profile = ({ navigation }) => {
+    const isFocused = useIsFocused();
+
+    const [ imageUri, setImageUri ] = useState(null);
+    const [ username, setUsername ] = useState('');
+    const [ firstName, setFirstName ] = useState('');
+    const [ lastName, setLastName ] = useState('');
+    const [ birthDate, setBirthDate ] = useState('');
+    const [ city, setCity ] = useState('');
+
+    useEffect( () => {
+        if(isFocused) {
+            fetchUserData();
+        }
+    }, [isFocused]);
+
+    const fetchUserData = async () => {
+        try {
+            const userInfo = await Auth.currentAuthenticatedUser();
+            const userData = await API.graphql(graphqlOperation(getUser, {id: userInfo.attributes.sub}));
+
+            setImageUri(userData.data.getUser.imageUri);
+            setUsername(userData.data.getUser.name);
+            setFirstName(userData.data.getUser.firstName);
+            setLastName(userData.data.getUser.lastName);
+            setBirthDate(userData.data.getUser.birthDate);
+            setCity(userData.data.getUser.city);
+
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
     return (
         <SafeAreaView style={styles.pageContainer}>
             <StatusBar animated={true} barStyle='dark-content' backgroundColor={colors.white}/>
@@ -24,7 +60,39 @@ const Profile = ({ navigation }) => {
                 </View>
             </View>
             <View style={styles.content}>
-
+                <Image style={styles.avatar} source={{uri: imageUri ? imageUri : 'https://icon-library.com/images/default-profile-icon/default-profile-icon-3.jpg'}}/>
+                <View style={styles.nameContainer}>
+                    <Text style={styles.name}>{firstName} </Text>
+                    <Text style={styles.name}>{lastName}</Text>
+                </View>
+                <Text style={styles.city}>{city}</Text>
+                <View style={styles.buttonsContainer}>
+                    <TouchableNativeFeedback onPress={ () => navigation.navigate('ProfileEditScreen', {
+                        imageUri: imageUri,
+                        username: username,
+                        firstName: firstName,
+                        lastName: lastName,
+                        birthDate: birthDate,
+                        city: city
+                    })}>
+                        <LinearGradient
+                            start={{x: 0.0, y: 0.0}} end={{x: 1.0, y: 0.0}}
+                            locations={[0, 1.0]}
+                            colors={[colors.purple, colors.blue]}
+                            style={styles.button}>
+                            <Text style={styles.buttonText}>Edytuj profil</Text>
+                        </LinearGradient>
+                    </TouchableNativeFeedback>
+                    <TouchableNativeFeedback>
+                        <LinearGradient
+                            start={{x: 0.0, y: 0.0}} end={{x: 1.0, y: 0.0}}
+                            locations={[0, 1.0]}
+                            colors={[colors.purple, colors.blue]}
+                            style={styles.button}>
+                            <Text style={styles.buttonText}>Informacje o aplikacji</Text>
+                        </LinearGradient>
+                    </TouchableNativeFeedback>
+                </View>
             </View>
         </SafeAreaView>
     )
@@ -70,7 +138,61 @@ const styles = StyleSheet.create({
     content: {
         width: '90%',
         height: '100%',
-        paddingTop: 8,
+        paddingTop: '10%',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+    },
+    avatar: {
+        width: 200,
+        height: 200,
+        borderRadius: 100,
+        borderWidth: 1,
+        borderColor: colors.white,
+        overflow: 'hidden',
+    },
+    nameContainer: {
+        paddingTop: 16,
+        width: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'row',
+    },
+    name: {
+        fontFamily: 'oxygen_light',
+        fontSize: 40,
+        color: colors.darkBlue
+    },
+    city: {
+        fontFamily: 'oxygen_light',
+        fontSize: 18,
+        color: colors.gray,
+    },
+    buttonsContainer: {
+        width: '100%',
+        marginTop: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },  
+    button: {
+        width: 240,
+        height: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 14,
+        borderRadius: 25,
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: 3,
+        },
+        shadowOpacity: 0.2,
+        shadowRadius: 3.65,
+        elevation: 6, 
+    },
+    buttonText: {
+        fontFamily: 'oxygen_light',
+        fontSize: 18,
+        color: colors.white,
     },
   })
 

@@ -6,10 +6,10 @@ import moment from 'moment-timezone';
 import 'moment/locale/pl';
 
 const MessageRectangle = (props) => {
-    const { message } = props;
+    const { message, myID } = props;
 
     const isMyMessage = () => {
-        return message.user.id === 'u1';
+        return message.user.id === myID;
     }
 
     return (
@@ -34,7 +34,7 @@ const MessageRectangle = (props) => {
                 <Text style={[styles.time, {
                     color: isMyMessage() ? colors.ultraLightBlue : colors.gray,
                 }]}>{moment(message.createdAt, 'YYYY-MM-DD HH:mm:ss', 'pl')
-                            .subtract(12, 'hours')
+                            .add(2, 'hours')
                             .tz('Europe/Warsaw')
                             .startOf('second')
                             .fromNow()}

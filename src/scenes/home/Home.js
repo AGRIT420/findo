@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, SafeAreaView, StatusBar, StyleSheet, Text, TouchableOpacity, Pressable, Modal } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, SafeAreaView, StatusBar, StyleSheet, Text, TouchableOpacity, Image, Modal } from 'react-native';
 import Card from '../../components/Card';
 import CardStack from '../../components/CardStack';
 import pets from '../../../assets/data/pets';
@@ -7,16 +7,18 @@ import breeds from '../../../assets/data/breeds';
 import locations from '../../../assets/data/locations';
 import { colors } from '../../theme';
 import { FontAwesome5 } from '@expo/vector-icons';
-// import CardFilter from '../../components/CardFilter/CardFilter';
+import { API, graphqlOperation, Auth } from 'aws-amplify';
 import { Picker } from '@react-native-picker/picker';
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import { getUser } from '../../graphql/queries';
+import { updateUser } from '../../graphql/mutations';
 
 const Home = ({ navigation }) => {
-  const [filterVisible, setFilterVisible] = useState(false);
-  const [selectedBreed, setSelectedBreed] = useState('any');
-  const [selectedLocation, setSelectedLocation] = useState('any');
-  const [activeBreedFilter, setActiveBreedFilter] = useState('any');
-  const [activeLocationFilter, setActiveLocationFilter] = useState('any');
+  const [ filterVisible, setFilterVisible ] = useState(false);
+  const [ selectedBreed, setSelectedBreed ] = useState('any');
+  const [ selectedLocation, setSelectedLocation ] = useState('any');
+  const [ activeBreedFilter, setActiveBreedFilter ] = useState('any');
+  const [ activeLocationFilter, setActiveLocationFilter ] = useState('any');
+  const [ userImageUri, setUserImageUri ] = useState(null);
 
   const onSwipeLeft = (pet) => {
     console.log("Swiped left", pet.name);
@@ -52,16 +54,33 @@ const Home = ({ navigation }) => {
       return petsFiltered;
   }
 
+  useEffect( () => {
+    const fetchUserData = async () => {
+        try {
+            const userInfo = await Auth.currentAuthenticatedUser();
+
+            const userData = await API.graphql(graphqlOperation(getUser, {id: userInfo.attributes.sub}));
+
+            setUserImageUri(userData.data.getUser.imageUri)
+
+        } catch (e) {
+            console.log(e);
+        }
+    }
+    fetchUserData();
+  }, []);
+
+
   return (
       <View style={styles.pageContainer}>
         <StatusBar animated={true} barStyle='dark-content' backgroundColor={colors.white}/>
         <View style={styles.titleBar}>
           <TouchableOpacity onPress={
             () => navigation.navigate('ProfileScreen')}>
-            <FontAwesome5
+            {userImageUri ? <Image style={styles.avatar} source={{uri: userImageUri}}/> : <FontAwesome5
               name="user-circle" 
               size={22} 
-              color={colors.black}/>
+              color={colors.black}/>}
           </TouchableOpacity>
           <Text style={styles.title}>findo</Text>
           <TouchableOpacity onPress={() => setFilterVisible(true)}>

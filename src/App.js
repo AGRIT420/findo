@@ -6,7 +6,12 @@ import { createUser, deleteUser } from './graphql/mutations';
 import awsconfig from './aws-exports.js';
 import { withAuthenticator } from 'aws-amplify-react-native';
 import * as Font from 'expo-font';
+import { LogBox } from 'react-native';
 import AppLoading from 'expo-app-loading';
+
+LogBox.ignoreLogs([
+    "Overwriting fontFamily style attribute preprocessor"
+]);
 
 Amplify.configure(awsconfig)
 

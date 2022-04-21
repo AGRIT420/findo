@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, SafeAreaView, Text, StyleSheet, StatusBar, ScrollView, TouchableNativeFeedback, TouchableOpacity, Image } from 'react-native';
 import PropTypes from 'prop-types';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -20,20 +20,22 @@ const Details = ({ route, navigation }) => {
     const user = route?.params?.user
 
     const askQuestionHandler = async () => {
-        // console.log('Zadaj pytanie');
+        
         try {
             const userInfo = await Auth.currentAuthenticatedUser();
+            const otherUserInfo = await API.graphql(graphqlOperation(getUser, {id: shelterID}));
 
             const chatRoomsUser1 = await API.graphql(graphqlOperation(listChatRoomUsers, {filter: {userID: {contains: userInfo.attributes.sub}}}))
             const chatRoomsUser2 = await API.graphql(graphqlOperation(listChatRoomUsers, {filter: {userID: {contains: shelterID}}}))
-            
+
             for(let i = 0; i < chatRoomsUser1.data.listChatRoomUsers.items.length; i++) {
                 for(let j = 0; j < chatRoomsUser2.data.listChatRoomUsers.items.length; j++) {
                     if(chatRoomsUser1.data.listChatRoomUsers.items[i].chatRoom.id === chatRoomsUser2.data.listChatRoomUsers.items[j].chatRoom.id) {
                         console.log("Chat room already exists");
                         navigation.navigate('ConversationScreen', {
                             id: chatRoomsUser1.data.listChatRoomUsers.items[i].chatRoom.id,
-                            username: "test",
+                            username: otherUserInfo.data.getUser.name,
+                            imageUri: otherUserInfo.data.getUser.imageUri,
                         })
                         return;
                     }

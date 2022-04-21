@@ -7,6 +7,10 @@ export const getUser = /* GraphQL */ `
       id
       name
       imageUri
+      firstName
+      lastName
+      city
+      birthDate
       chatRoomUser {
         items {
           id
@@ -35,6 +39,10 @@ export const listUsers = /* GraphQL */ `
         id
         name
         imageUri
+        firstName
+        lastName
+        city
+        birthDate
         chatRoomUser {
           nextToken
         }
@@ -56,6 +64,10 @@ export const getChatRoomUser = /* GraphQL */ `
         id
         name
         imageUri
+        firstName
+        lastName
+        city
+        birthDate
         chatRoomUser {
           nextToken
         }
@@ -66,6 +78,9 @@ export const getChatRoomUser = /* GraphQL */ `
       chatRoom {
         id
         chatRoomUsers {
+          nextToken
+        }
+        messages {
           nextToken
         }
         createdAt
@@ -93,6 +108,10 @@ export const listChatRoomUsers = /* GraphQL */ `
           id
           name
           imageUri
+          firstName
+          lastName
+          city
+          birthDate
           createdAt
           updatedAt
           owner
@@ -126,6 +145,18 @@ export const getChatRoom = /* GraphQL */ `
         }
         nextToken
       }
+      messages {
+        items {
+          id
+          createdAt
+          content
+          userID
+          chatRoomID
+          updatedAt
+          owner
+        }
+        nextToken
+      }
       createdAt
       updatedAt
       owner
@@ -144,7 +175,136 @@ export const listChatRooms = /* GraphQL */ `
         chatRoomUsers {
           nextToken
         }
+        messages {
+          nextToken
+        }
         createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+  }
+`;
+export const getMessage = /* GraphQL */ `
+  query GetMessage($id: ID!) {
+    getMessage(id: $id) {
+      id
+      createdAt
+      content
+      userID
+      chatRoomID
+      user {
+        id
+        name
+        imageUri
+        firstName
+        lastName
+        city
+        birthDate
+        chatRoomUser {
+          nextToken
+        }
+        createdAt
+        updatedAt
+        owner
+      }
+      chatRoom {
+        id
+        chatRoomUsers {
+          nextToken
+        }
+        messages {
+          nextToken
+        }
+        createdAt
+        updatedAt
+        owner
+      }
+      updatedAt
+      owner
+    }
+  }
+`;
+export const listMessages = /* GraphQL */ `
+  query ListMessages(
+    $filter: ModelMessageFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listMessages(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        createdAt
+        content
+        userID
+        chatRoomID
+        user {
+          id
+          name
+          imageUri
+          firstName
+          lastName
+          city
+          birthDate
+          createdAt
+          updatedAt
+          owner
+        }
+        chatRoom {
+          id
+          createdAt
+          updatedAt
+          owner
+        }
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+  }
+`;
+export const messagesByChatRoom = /* GraphQL */ `
+  query MessagesByChatRoom(
+    $chatRoomID: ID!
+    $createdAt: ModelStringKeyConditionInput
+    $sortDirection: ModelSortDirection
+    $filter: ModelMessageFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    messagesByChatRoom(
+      chatRoomID: $chatRoomID
+      createdAt: $createdAt
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        createdAt
+        content
+        userID
+        chatRoomID
+        user {
+          id
+          name
+          imageUri
+          firstName
+          lastName
+          city
+          birthDate
+          createdAt
+          updatedAt
+          owner
+        }
+        chatRoom {
+          id
+          createdAt
+          updatedAt
+          owner
+        }
         updatedAt
         owner
       }

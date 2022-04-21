@@ -21,8 +21,6 @@ const Messages = ({ navigation }) => {
 
                 setChatRooms(userData.data.getUser.chatRoomUser.items)
 
-                console.log(userData);
-
             } catch (e) {
                 console.log(e);
             }

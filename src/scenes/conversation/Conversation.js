@@ -1,17 +1,37 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, SafeAreaView, Text, Image, StyleSheet, StatusBar, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 import { colors } from '../../theme';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { FlatList } from 'react-native-gesture-handler';
-import chats from '../../../assets/data/chats';
 import MessageRectangle from '../../components/MessageRectangle/MessageRectangle';
 import MessageInputBox from '../../components/MessageInputBox/MessageInputBox';
+import { API, Auth, graphqlOperation } from 'aws-amplify';
+import { messagesByChatRoom } from '../../graphql/queries';
 
 const Conversation = ({ route, navigation }) => {
     const id = route?.params?.id
     const username = route?.params?.username
     const imageUri = route?.params?.imageUri
+
+    const [messages, setMessages] = useState([]);
+    const [myID, setMyID] = useState(null);
+
+    useEffect( () => {
+        const fetchMessages = async () => {
+            const messagesData = await API.graphql(graphqlOperation(messagesByChatRoom, {chatRoomID: id, sortDirection: "ASC"}));
+            setMessages(messagesData.data.messagesByChatRoom.items);
+        }
+        fetchMessages();
+    }, [])
+
+    useEffect( () => {
+        const getMyID = async () => {
+            const userInfo = await Auth.currentAuthenticatedUser();
+            setMyID(userInfo.attributes.sub);
+        }
+        getMyID();
+    }, [])
 
     return (
         <SafeAreaView style={styles.pageContainer}>
@@ -35,12 +55,12 @@ const Conversation = ({ route, navigation }) => {
             
             <View style={styles.content}>
                 <FlatList 
-                    data={chats.messages} 
+                    data={messages} 
                     renderItem={({ item }) => 
-                            <MessageRectangle message={item}/>}
+                            <MessageRectangle message={item} myID={myID}/>}
                     keyExtractor={(item) => item.id}
                 />
-                <MessageInputBox/>
+                <MessageInputBox chatRoomID={id}/>
             </View>
             
         </SafeAreaView>
@@ -52,12 +72,14 @@ Conversation.propTypes = {
         params: PropTypes.shape({
             id: PropTypes.string,
             username: PropTypes.string,
+            imageUri: PropTypes.string,
         }),
     }),
     navigation: PropTypes.shape({
         params: PropTypes.shape({
             id: PropTypes.string,
             username: PropTypes.string,
+            imageUri: PropTypes.string,
         }),
         goBack: PropTypes.func,
     }),

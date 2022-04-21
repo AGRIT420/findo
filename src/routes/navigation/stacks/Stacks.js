@@ -6,6 +6,7 @@ import Favorites from '../../../scenes/favorites';
 import Profile from '../../../scenes/profile';
 import Details from '../../../scenes/details';
 import Conversation from '../../../scenes/conversation';
+import ProfileEdit from '../../../scenes/profileEdit';
 
 const Stack = createStackNavigator();
 
@@ -29,9 +30,20 @@ export const HomeNavigator = () => (
         />
 
         <Stack.Screen
+            name="ConversationScreen"
+            component={Conversation}
+        />
+
+        <Stack.Screen
             name="ProfileScreen"
             component={Profile}
         />
+
+        <Stack.Screen
+            name="ProfileEditScreen"
+            component={ProfileEdit}
+        />
+
     </Stack.Navigator>
 )
 
@@ -48,6 +60,11 @@ export const FavoritesNavigator = () => (
         <Stack.Screen
             name="DetailsScreen"
             component={Details}
+        />
+
+        <Stack.Screen
+            name="ConversationScreen"
+            component={Conversation}
         />
 
     </Stack.Navigator>
