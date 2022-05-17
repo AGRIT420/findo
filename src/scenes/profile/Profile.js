@@ -46,13 +46,15 @@ const Profile = ({ navigation }) => {
             <StatusBar animated={true} barStyle='dark-content' backgroundColor={colors.white}/>
             <View style={styles.titleBar}>
                 <View style={styles.iconContainer}>
-                    <TouchableOpacity onPress={
+                <TouchableOpacity onPress={
                         () => navigation.goBack()}>
-                        <FontAwesome5
-                        name="chevron-left" 
-                        size={22} 
-                        color={colors.black}
-                        style={styles.icon}/>
+                        <View style={styles.backButton}>
+                            <FontAwesome5
+                                name="chevron-left" 
+                                size={22} 
+                                color={colors.black}
+                                style={styles.icon}/>
+                        </View>
                     </TouchableOpacity>
                 </View>
                 <View style={styles.titleContainer}>
@@ -117,9 +119,21 @@ const styles = StyleSheet.create({
         backgroundColor: colors.white,
         paddingVertical: 2,
     },
+    backButton: {
+        width: 80,
+        height: 40,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 30,
+        backgroundColor: colors.white,
+    },
     iconContainer: {
         width: '5%',
         alignItems: 'center',
+    },
+    icon: {
+        justifyContent: 'flex-start',
+        alignSelf: 'center',
     },
     titleContainer: {
         width: '95%',
@@ -130,10 +144,6 @@ const styles = StyleSheet.create({
         fontFamily: 'oxygen_regular',
         fontSize: 32,
         color: colors.blue,
-    },
-    icon: {
-        justifyContent: 'flex-start',
-        alignSelf: 'flex-start',
     },
     content: {
         width: '90%',

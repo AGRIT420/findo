@@ -10,13 +10,16 @@ import { Auth } from 'aws-amplify';
 const MessagesListItem = (props) => {
     const { chatRoom } = props;
     const [ otherUser, setOtherUser ] = useState(null);
+    const [ myUserID, setMyUserID ] = useState(null);
 
     const navigation = useNavigation();
 
     useEffect( () => {
+        //console.log("czat: ", chatRoom)
         const getOtherUser = async () => {
             const userInfo = await Auth.currentAuthenticatedUser();
-            if (chatRoom.chatRoomUsers.items[0].user.id === userInfo.attributes.sub) {
+            setMyUserID(userInfo.attributes.sub)
+            if (chatRoom.chatRoomUsers.items[0].user.id === myUserID) {
                 setOtherUser(chatRoom.chatRoomUsers.items[1].user);
             } else {
                 setOtherUser(chatRoom.chatRoomUsers.items[0].user);
@@ -40,12 +43,15 @@ const MessagesListItem = (props) => {
                     <Image source={{ uri: otherUser.imageUri }} style={styles.avatar}/>
                     <View style={styles.midContainer}>
                         <Text numberOfLines={1} style={styles.username}>{otherUser.name}</Text>
-                        <Text numberOfLines={1} style={styles.lastMessage}>{chatRoom.lastMessage ? chatRoom.lastMessage.content : ""}</Text>
+                        <Text numberOfLines={1} style={styles.lastMessage}>{(chatRoom.lastMessage ? 
+                                                                                (chatRoom.lastMessage.messageType === "text" ? 
+                                                                                    (chatRoom.lastMessage.user.id === myUserID ? `Ja: ${chatRoom.lastMessage.content}` : chatRoom.lastMessage.content) 
+                                                                                : "Złożono propozycję spotkania...") 
+                                                                            : "")}</Text>
                         <Text style={styles.time}> 
                             {chatRoom.lastMessage && moment(chatRoom.lastMessage.createdAt, 'YYYY-MM-DD HH:mm:ss', 'pl')
-                            .subtract(12, 'hours')
-                            .tz('Europe/Warsaw')
-                            .startOf('second')
+                            .add(2, 'hours')
+                            .subtract(3, 'seconds')
                             .fromNow()}
                         </Text>
                     </View>
@@ -88,6 +94,12 @@ const styles = StyleSheet.create({
     lastMessage: {
         flex: 1,
         fontFamily: 'oxygen_regular',
+        fontSize: 16,
+        color: colors.gray,
+    },
+    lastMessageUnreaded: {
+        flex: 1,
+        fontFamily: 'oxygen_bold',
         fontSize: 16,
         color: colors.gray,
     },

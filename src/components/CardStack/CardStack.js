@@ -74,7 +74,20 @@ const CardStack = (props) => {
     translateX.value = 0;
     setNextIndex(currentIndex + 1);
   }, [currentIndex, translateX]);
-
+/*
+  useEffect(() => {
+    const fetchFavoritesData =  () => {
+      for(let i = 0; i < data[currentIndex].favoritePet.items.length; i++) {
+        if (data[currentIndex].favoritePet.items[i].userID === data[0].userID) {
+          console.log("YES")
+        } else {
+          console.log("NO")
+        }
+      }
+    }
+    fetchFavoritesData();
+  }, [currentIndex])
+*/
   const restartStack = () => {
     setCurrentIndex(0);
     setNextIndex(currentIndex + 1);

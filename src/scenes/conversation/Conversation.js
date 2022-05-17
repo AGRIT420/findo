@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { View, SafeAreaView, Text, Image, StyleSheet, StatusBar, TouchableOpacity } from 'react-native';
+import { View, SafeAreaView, Text, Image, StyleSheet, StatusBar, TouchableOpacity, FlatList } from 'react-native';
 import PropTypes from 'prop-types';
 import { colors } from '../../theme';
 import { FontAwesome5 } from '@expo/vector-icons';
-import { FlatList } from 'react-native-gesture-handler';
 import MessageRectangle from '../../components/MessageRectangle/MessageRectangle';
 import MessageInputBox from '../../components/MessageInputBox/MessageInputBox';
 import { API, Auth, graphqlOperation } from 'aws-amplify';
-import { messagesByChatRoom } from '../../graphql/queries';
+import { getUser, messagesByChatRoom } from '../../graphql/queries';
+import { onCreateMessage } from './subscriptions';
+import ProposalRectangle from '../../components/ProposalRectangle/ProposalRectangle';
 
 const Conversation = ({ route, navigation }) => {
     const id = route?.params?.id
@@ -19,18 +20,30 @@ const Conversation = ({ route, navigation }) => {
 
     useEffect( () => {
         const fetchMessages = async () => {
-            const messagesData = await API.graphql(graphqlOperation(messagesByChatRoom, {chatRoomID: id, sortDirection: "ASC"}));
-            setMessages(messagesData.data.messagesByChatRoom.items);
+            await API.graphql(graphqlOperation(messagesByChatRoom, {chatRoomID: id, sortDirection: "DESC"})).then(result => setMessages(result.data.messagesByChatRoom.items));
         }
         fetchMessages();
     }, [])
 
     useEffect( () => {
         const getMyID = async () => {
-            const userInfo = await Auth.currentAuthenticatedUser();
-            setMyID(userInfo.attributes.sub);
+            await Auth.currentAuthenticatedUser().then(result => setMyID(result.attributes.sub));
         }
         getMyID();
+    }, [])
+
+    useEffect( () => {
+            const subscription = API.graphql(graphqlOperation(onCreateMessage)).subscribe({
+                next: (data) => {
+                    const newMessage = data.value.data.onCreateMessage;
+                    if (newMessage.chatRoomID !== id) {
+                        return;
+                    }
+                    setMessages(messages => [newMessage , ...messages]);
+                },
+                error: error => console.log("Error: ", error),
+            })
+            return () => subscription.unsubscribe();
     }, [])
 
     return (
@@ -38,13 +51,15 @@ const Conversation = ({ route, navigation }) => {
             <StatusBar animated={true} barStyle='dark-content' backgroundColor={colors.white}/>
             <View style={styles.titleBar}>
                 <View style={styles.iconContainer}>
-                    <TouchableOpacity onPress={
+                <TouchableOpacity onPress={
                         () => navigation.goBack()}>
-                        <FontAwesome5
-                        name="chevron-left" 
-                        size={22} 
-                        color={colors.black}
-                        style={styles.icon}/>
+                        <View style={styles.backButton}>
+                            <FontAwesome5
+                                name="chevron-left" 
+                                size={22} 
+                                color={colors.black}
+                                style={styles.icon}/>
+                        </View>
                     </TouchableOpacity>
                 </View>
                 <View style={styles.titleContainer}>
@@ -52,13 +67,15 @@ const Conversation = ({ route, navigation }) => {
                     <Text numberOfLines={2} style={styles.title}>{username}</Text>
                 </View>
             </View>
-            
             <View style={styles.content}>
                 <FlatList 
                     data={messages} 
-                    renderItem={({ item }) => 
-                            <MessageRectangle message={item} myID={myID}/>}
+                    renderItem={({ item }) => item.messageType === "proposal" ?
+                        <ProposalRectangle message={item} myID={myID}/> : <MessageRectangle message={item} myID={myID}/>
+                    }
                     keyExtractor={(item) => item.id}
+                    showsVerticalScrollIndicator={false}
+                    inverted
                 />
                 <MessageInputBox chatRoomID={id}/>
             </View>
@@ -122,9 +139,21 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderColor: colors.ultraLightGray,
     },
+    backButton: {
+        width: 80,
+        height: 40,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 30,
+        backgroundColor: colors.white,
+    },
     iconContainer: {
         width: '5%',
         alignItems: 'center',
+    },
+    icon: {
+        justifyContent: 'flex-start',
+        alignSelf: 'center',
     },
     titleContainer: {
         width: '95%',
@@ -139,10 +168,6 @@ const styles = StyleSheet.create({
         fontFamily: 'oxygen_regular',
         fontSize: 20,
         color: colors.blue,
-    },
-    icon: {
-        justifyContent: 'flex-start',
-        alignSelf: 'flex-start',
     },
     avatar: {
         width: 40,

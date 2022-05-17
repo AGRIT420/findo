@@ -6,6 +6,7 @@ const colors = {
     ultraLightGray: '#e6e6e6',
     blue: '#1aa0a3',
     darkBlue: '#066163',
+    darkBlueLighted: '#086868',
     lightBlue: '#38d3d6',
     ultraLightBlue: '#72fafc',
     lightPurple: '#5c5c5c',

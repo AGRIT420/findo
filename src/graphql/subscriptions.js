@@ -6,6 +6,7 @@ export const onCreateUser = /* GraphQL */ `
     onCreateUser(owner: $owner) {
       id
       name
+      usertype
       imageUri
       firstName
       lastName
@@ -16,6 +17,17 @@ export const onCreateUser = /* GraphQL */ `
           id
           userID
           chatRoomID
+          createdAt
+          updatedAt
+          owner
+        }
+        nextToken
+      }
+      favoritePets {
+        items {
+          id
+          userID
+          petID
           createdAt
           updatedAt
           owner
@@ -33,6 +45,7 @@ export const onUpdateUser = /* GraphQL */ `
     onUpdateUser(owner: $owner) {
       id
       name
+      usertype
       imageUri
       firstName
       lastName
@@ -43,6 +56,17 @@ export const onUpdateUser = /* GraphQL */ `
           id
           userID
           chatRoomID
+          createdAt
+          updatedAt
+          owner
+        }
+        nextToken
+      }
+      favoritePets {
+        items {
+          id
+          userID
+          petID
           createdAt
           updatedAt
           owner
@@ -60,6 +84,7 @@ export const onDeleteUser = /* GraphQL */ `
     onDeleteUser(owner: $owner) {
       id
       name
+      usertype
       imageUri
       firstName
       lastName
@@ -70,6 +95,17 @@ export const onDeleteUser = /* GraphQL */ `
           id
           userID
           chatRoomID
+          createdAt
+          updatedAt
+          owner
+        }
+        nextToken
+      }
+      favoritePets {
+        items {
+          id
+          userID
+          petID
           createdAt
           updatedAt
           owner
@@ -91,12 +127,16 @@ export const onCreateChatRoomUser = /* GraphQL */ `
       user {
         id
         name
+        usertype
         imageUri
         firstName
         lastName
         city
         birthDate
         chatRoomUser {
+          nextToken
+        }
+        favoritePets {
           nextToken
         }
         createdAt
@@ -110,6 +150,20 @@ export const onCreateChatRoomUser = /* GraphQL */ `
         }
         messages {
           nextToken
+        }
+        lastMessageID
+        lastMessage {
+          id
+          createdAt
+          messageType
+          content
+          suggestedDate
+          suggestedHour
+          status
+          userID
+          chatRoomID
+          updatedAt
+          owner
         }
         createdAt
         updatedAt
@@ -130,12 +184,16 @@ export const onUpdateChatRoomUser = /* GraphQL */ `
       user {
         id
         name
+        usertype
         imageUri
         firstName
         lastName
         city
         birthDate
         chatRoomUser {
+          nextToken
+        }
+        favoritePets {
           nextToken
         }
         createdAt
@@ -149,6 +207,20 @@ export const onUpdateChatRoomUser = /* GraphQL */ `
         }
         messages {
           nextToken
+        }
+        lastMessageID
+        lastMessage {
+          id
+          createdAt
+          messageType
+          content
+          suggestedDate
+          suggestedHour
+          status
+          userID
+          chatRoomID
+          updatedAt
+          owner
         }
         createdAt
         updatedAt
@@ -169,12 +241,16 @@ export const onDeleteChatRoomUser = /* GraphQL */ `
       user {
         id
         name
+        usertype
         imageUri
         firstName
         lastName
         city
         birthDate
         chatRoomUser {
+          nextToken
+        }
+        favoritePets {
           nextToken
         }
         createdAt
@@ -188,6 +264,20 @@ export const onDeleteChatRoomUser = /* GraphQL */ `
         }
         messages {
           nextToken
+        }
+        lastMessageID
+        lastMessage {
+          id
+          createdAt
+          messageType
+          content
+          suggestedDate
+          suggestedHour
+          status
+          userID
+          chatRoomID
+          updatedAt
+          owner
         }
         createdAt
         updatedAt
@@ -218,13 +308,51 @@ export const onCreateChatRoom = /* GraphQL */ `
         items {
           id
           createdAt
+          messageType
           content
+          suggestedDate
+          suggestedHour
+          status
           userID
           chatRoomID
           updatedAt
           owner
         }
         nextToken
+      }
+      lastMessageID
+      lastMessage {
+        id
+        createdAt
+        messageType
+        content
+        suggestedDate
+        suggestedHour
+        status
+        userID
+        chatRoomID
+        user {
+          id
+          name
+          usertype
+          imageUri
+          firstName
+          lastName
+          city
+          birthDate
+          createdAt
+          updatedAt
+          owner
+        }
+        chatRoom {
+          id
+          lastMessageID
+          createdAt
+          updatedAt
+          owner
+        }
+        updatedAt
+        owner
       }
       createdAt
       updatedAt
@@ -251,13 +379,51 @@ export const onUpdateChatRoom = /* GraphQL */ `
         items {
           id
           createdAt
+          messageType
           content
+          suggestedDate
+          suggestedHour
+          status
           userID
           chatRoomID
           updatedAt
           owner
         }
         nextToken
+      }
+      lastMessageID
+      lastMessage {
+        id
+        createdAt
+        messageType
+        content
+        suggestedDate
+        suggestedHour
+        status
+        userID
+        chatRoomID
+        user {
+          id
+          name
+          usertype
+          imageUri
+          firstName
+          lastName
+          city
+          birthDate
+          createdAt
+          updatedAt
+          owner
+        }
+        chatRoom {
+          id
+          lastMessageID
+          createdAt
+          updatedAt
+          owner
+        }
+        updatedAt
+        owner
       }
       createdAt
       updatedAt
@@ -284,13 +450,51 @@ export const onDeleteChatRoom = /* GraphQL */ `
         items {
           id
           createdAt
+          messageType
           content
+          suggestedDate
+          suggestedHour
+          status
           userID
           chatRoomID
           updatedAt
           owner
         }
         nextToken
+      }
+      lastMessageID
+      lastMessage {
+        id
+        createdAt
+        messageType
+        content
+        suggestedDate
+        suggestedHour
+        status
+        userID
+        chatRoomID
+        user {
+          id
+          name
+          usertype
+          imageUri
+          firstName
+          lastName
+          city
+          birthDate
+          createdAt
+          updatedAt
+          owner
+        }
+        chatRoom {
+          id
+          lastMessageID
+          createdAt
+          updatedAt
+          owner
+        }
+        updatedAt
+        owner
       }
       createdAt
       updatedAt
@@ -303,18 +507,26 @@ export const onCreateMessage = /* GraphQL */ `
     onCreateMessage(owner: $owner) {
       id
       createdAt
+      messageType
       content
+      suggestedDate
+      suggestedHour
+      status
       userID
       chatRoomID
       user {
         id
         name
+        usertype
         imageUri
         firstName
         lastName
         city
         birthDate
         chatRoomUser {
+          nextToken
+        }
+        favoritePets {
           nextToken
         }
         createdAt
@@ -328,6 +540,20 @@ export const onCreateMessage = /* GraphQL */ `
         }
         messages {
           nextToken
+        }
+        lastMessageID
+        lastMessage {
+          id
+          createdAt
+          messageType
+          content
+          suggestedDate
+          suggestedHour
+          status
+          userID
+          chatRoomID
+          updatedAt
+          owner
         }
         createdAt
         updatedAt
@@ -343,18 +569,26 @@ export const onUpdateMessage = /* GraphQL */ `
     onUpdateMessage(owner: $owner) {
       id
       createdAt
+      messageType
       content
+      suggestedDate
+      suggestedHour
+      status
       userID
       chatRoomID
       user {
         id
         name
+        usertype
         imageUri
         firstName
         lastName
         city
         birthDate
         chatRoomUser {
+          nextToken
+        }
+        favoritePets {
           nextToken
         }
         createdAt
@@ -368,6 +602,20 @@ export const onUpdateMessage = /* GraphQL */ `
         }
         messages {
           nextToken
+        }
+        lastMessageID
+        lastMessage {
+          id
+          createdAt
+          messageType
+          content
+          suggestedDate
+          suggestedHour
+          status
+          userID
+          chatRoomID
+          updatedAt
+          owner
         }
         createdAt
         updatedAt
@@ -383,18 +631,26 @@ export const onDeleteMessage = /* GraphQL */ `
     onDeleteMessage(owner: $owner) {
       id
       createdAt
+      messageType
       content
+      suggestedDate
+      suggestedHour
+      status
       userID
       chatRoomID
       user {
         id
         name
+        usertype
         imageUri
         firstName
         lastName
         city
         birthDate
         chatRoomUser {
+          nextToken
+        }
+        favoritePets {
           nextToken
         }
         createdAt
@@ -409,10 +665,459 @@ export const onDeleteMessage = /* GraphQL */ `
         messages {
           nextToken
         }
+        lastMessageID
+        lastMessage {
+          id
+          createdAt
+          messageType
+          content
+          suggestedDate
+          suggestedHour
+          status
+          userID
+          chatRoomID
+          updatedAt
+          owner
+        }
         createdAt
         updatedAt
         owner
       }
+      updatedAt
+      owner
+    }
+  }
+`;
+export const onCreateFavoritePet = /* GraphQL */ `
+  subscription OnCreateFavoritePet($owner: String) {
+    onCreateFavoritePet(owner: $owner) {
+      id
+      userID
+      petID
+      user {
+        id
+        name
+        usertype
+        imageUri
+        firstName
+        lastName
+        city
+        birthDate
+        chatRoomUser {
+          nextToken
+        }
+        favoritePets {
+          nextToken
+        }
+        createdAt
+        updatedAt
+        owner
+      }
+      pet {
+        id
+        name
+        imageUri
+        available
+        description
+        breed
+        healthCondition
+        birthDate
+        inShelterSinceDate
+        shelterID
+        shelter {
+          id
+          name
+          location
+          imageUri
+          userID
+          createdAt
+          updatedAt
+          owner
+        }
+        favoritePet {
+          nextToken
+        }
+        createdAt
+        updatedAt
+        owner
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+  }
+`;
+export const onUpdateFavoritePet = /* GraphQL */ `
+  subscription OnUpdateFavoritePet($owner: String) {
+    onUpdateFavoritePet(owner: $owner) {
+      id
+      userID
+      petID
+      user {
+        id
+        name
+        usertype
+        imageUri
+        firstName
+        lastName
+        city
+        birthDate
+        chatRoomUser {
+          nextToken
+        }
+        favoritePets {
+          nextToken
+        }
+        createdAt
+        updatedAt
+        owner
+      }
+      pet {
+        id
+        name
+        imageUri
+        available
+        description
+        breed
+        healthCondition
+        birthDate
+        inShelterSinceDate
+        shelterID
+        shelter {
+          id
+          name
+          location
+          imageUri
+          userID
+          createdAt
+          updatedAt
+          owner
+        }
+        favoritePet {
+          nextToken
+        }
+        createdAt
+        updatedAt
+        owner
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+  }
+`;
+export const onDeleteFavoritePet = /* GraphQL */ `
+  subscription OnDeleteFavoritePet($owner: String) {
+    onDeleteFavoritePet(owner: $owner) {
+      id
+      userID
+      petID
+      user {
+        id
+        name
+        usertype
+        imageUri
+        firstName
+        lastName
+        city
+        birthDate
+        chatRoomUser {
+          nextToken
+        }
+        favoritePets {
+          nextToken
+        }
+        createdAt
+        updatedAt
+        owner
+      }
+      pet {
+        id
+        name
+        imageUri
+        available
+        description
+        breed
+        healthCondition
+        birthDate
+        inShelterSinceDate
+        shelterID
+        shelter {
+          id
+          name
+          location
+          imageUri
+          userID
+          createdAt
+          updatedAt
+          owner
+        }
+        favoritePet {
+          nextToken
+        }
+        createdAt
+        updatedAt
+        owner
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+  }
+`;
+export const onCreateShelter = /* GraphQL */ `
+  subscription OnCreateShelter($owner: String) {
+    onCreateShelter(owner: $owner) {
+      id
+      name
+      location
+      imageUri
+      userID
+      user {
+        id
+        name
+        usertype
+        imageUri
+        firstName
+        lastName
+        city
+        birthDate
+        chatRoomUser {
+          nextToken
+        }
+        favoritePets {
+          nextToken
+        }
+        createdAt
+        updatedAt
+        owner
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+  }
+`;
+export const onUpdateShelter = /* GraphQL */ `
+  subscription OnUpdateShelter($owner: String) {
+    onUpdateShelter(owner: $owner) {
+      id
+      name
+      location
+      imageUri
+      userID
+      user {
+        id
+        name
+        usertype
+        imageUri
+        firstName
+        lastName
+        city
+        birthDate
+        chatRoomUser {
+          nextToken
+        }
+        favoritePets {
+          nextToken
+        }
+        createdAt
+        updatedAt
+        owner
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+  }
+`;
+export const onDeleteShelter = /* GraphQL */ `
+  subscription OnDeleteShelter($owner: String) {
+    onDeleteShelter(owner: $owner) {
+      id
+      name
+      location
+      imageUri
+      userID
+      user {
+        id
+        name
+        usertype
+        imageUri
+        firstName
+        lastName
+        city
+        birthDate
+        chatRoomUser {
+          nextToken
+        }
+        favoritePets {
+          nextToken
+        }
+        createdAt
+        updatedAt
+        owner
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+  }
+`;
+export const onCreatePet = /* GraphQL */ `
+  subscription OnCreatePet($owner: String) {
+    onCreatePet(owner: $owner) {
+      id
+      name
+      imageUri
+      available
+      description
+      breed
+      healthCondition
+      birthDate
+      inShelterSinceDate
+      shelterID
+      shelter {
+        id
+        name
+        location
+        imageUri
+        userID
+        user {
+          id
+          name
+          usertype
+          imageUri
+          firstName
+          lastName
+          city
+          birthDate
+          createdAt
+          updatedAt
+          owner
+        }
+        createdAt
+        updatedAt
+        owner
+      }
+      favoritePet {
+        items {
+          id
+          userID
+          petID
+          createdAt
+          updatedAt
+          owner
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+  }
+`;
+export const onUpdatePet = /* GraphQL */ `
+  subscription OnUpdatePet($owner: String) {
+    onUpdatePet(owner: $owner) {
+      id
+      name
+      imageUri
+      available
+      description
+      breed
+      healthCondition
+      birthDate
+      inShelterSinceDate
+      shelterID
+      shelter {
+        id
+        name
+        location
+        imageUri
+        userID
+        user {
+          id
+          name
+          usertype
+          imageUri
+          firstName
+          lastName
+          city
+          birthDate
+          createdAt
+          updatedAt
+          owner
+        }
+        createdAt
+        updatedAt
+        owner
+      }
+      favoritePet {
+        items {
+          id
+          userID
+          petID
+          createdAt
+          updatedAt
+          owner
+        }
+        nextToken
+      }
+      createdAt
+      updatedAt
+      owner
+    }
+  }
+`;
+export const onDeletePet = /* GraphQL */ `
+  subscription OnDeletePet($owner: String) {
+    onDeletePet(owner: $owner) {
+      id
+      name
+      imageUri
+      available
+      description
+      breed
+      healthCondition
+      birthDate
+      inShelterSinceDate
+      shelterID
+      shelter {
+        id
+        name
+        location
+        imageUri
+        userID
+        user {
+          id
+          name
+          usertype
+          imageUri
+          firstName
+          lastName
+          city
+          birthDate
+          createdAt
+          updatedAt
+          owner
+        }
+        createdAt
+        updatedAt
+        owner
+      }
+      favoritePet {
+        items {
+          id
+          userID
+          petID
+          createdAt
+          updatedAt
+          owner
+        }
+        nextToken
+      }
+      createdAt
       updatedAt
       owner
     }

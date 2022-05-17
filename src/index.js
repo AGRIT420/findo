@@ -4,7 +4,10 @@ import App from './App';
 
 registerRootComponent(App);
 
+
 if (Platform.OS === 'web') {
     const rootTag = document.getElementById('root') || document.getElementById('main');
     AppRegistry.runApplication('main', { rootTag });
 }
+
+global.Buffer = global.Buffer || require('buffer').Buffer;

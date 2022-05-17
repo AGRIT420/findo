@@ -1,21 +1,23 @@
 type User 
 @model 
-@aws_iam 
-@auth(rules: [{ allow: owner }]) {
+@aws_cognito_user_pools
+@auth(rules: [{ allow: owner }, { allow: private, provider: userPools, operations: [create, read, update, delete] }]) {
   id: ID!
   name: String!
+  usertype: String!
   imageUri: String
   firstName: String
   lastName: String
   city: String
   birthDate: String
   chatRoomUser: [ChatRoomUser] @hasMany(indexName: "byUser", fields: ["id"])
+  favoritePets: [FavoritePet] @hasMany(indexName: "byUser", fields: ["id"])
 }
 
 type ChatRoomUser 
 @model 
-@aws_iam 
-@auth(rules: [{ allow: owner }]) {
+@aws_cognito_user_pools
+@auth(rules: [{ allow: owner }, { allow: private, operations: [create, read, update, delete] }]) {
   id: ID!
   userID: ID! @index(name: "byUser", sortKeyFields: ["chatRoomID"])
   chatRoomID: ID! @index(name: "byChatRoom", sortKeyFields: ["userID"])
@@ -25,22 +27,69 @@ type ChatRoomUser
 
 type ChatRoom 
 @model 
-@aws_iam 
-@auth(rules: [{ allow: owner }]) {
+@aws_cognito_user_pools
+@auth(rules: [{ allow: owner }, { allow: private, operations: [create, read, update, delete] }]) {
   id: ID!
   chatRoomUsers: [ChatRoomUser] @hasMany(indexName: "byChatRoom", fields: ["id"])
   messages: [Message] @hasMany(indexName: "byChatRoom", fields: ["id"])
+  lastMessageID: ID
+  lastMessage: Message @hasOne(fields: ["lastMessageID"])
 }
 
 type Message
 @model
-@aws_iam
-@auth(rules: [{ allow: owner }]) {
+@aws_cognito_user_pools
+@auth(rules: [{ allow: owner }, { allow: private, operations: [create, read, update, delete] }]) {
   id: ID!
   createdAt: String!
-  content: String!
+  messageType: String!
+  content: String
+  suggestedDate: String
+  suggestedHour: String
+  status: String
   userID: ID!
   chatRoomID: ID! @index(name: "byChatRoom", sortKeyFields: ["createdAt"], queryField: "messagesByChatRoom")
   user: User @hasOne(fields: ["userID"])
   chatRoom: ChatRoom @hasOne(fields: ["chatRoomID"])
+}
+
+type FavoritePet
+@model
+@aws_cognito_user_pools
+@auth(rules: [{allow: owner }, { allow: private, operations: [create, read, update, delete] }]) {
+	id: ID!
+	userID: ID! @index(name: "byUser", sortKeyFields: ["petID"])
+	petID: ID! @index(name: "byPet", sortKeyFields: ["userID"])
+	user: User @hasOne(fields: ["userID"])
+	pet: Pet @hasOne(fields: ["petID"])
+}
+
+type Shelter
+@model
+@aws_cognito_user_pools
+@auth(rules: [{allow: owner }, { allow: private, operations: [create, read, update, delete] }]) {
+	id: ID!
+	name: String!
+	location: String!
+	imageUri: String
+	userID: ID!
+	user: User @hasOne(fields: ["userID"])
+}
+
+type Pet
+@model
+@aws_cognito_user_pools
+@auth(rules: [{ allow: owner }, { allow: private, operations: [create, read, update, delete] }]) {
+	id: ID!
+	name: String!
+	imageUri: String
+	available: Boolean
+	description: String
+	breed: String
+	healthCondition: String
+	birthDate: String
+	inShelterSinceDate: String
+	shelterID: ID!
+	shelter: Shelter @hasOne(fields: ["shelterID"])
+	favoritePet: [FavoritePet] @hasMany(indexName: "byPet", fields: ["id"])
 }

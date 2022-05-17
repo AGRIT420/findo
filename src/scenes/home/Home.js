@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { View, SafeAreaView, StatusBar, StyleSheet, Text, TouchableOpacity, Image, Modal } from 'react-native';
 import Card from '../../components/Card';
 import CardStack from '../../components/CardStack';
-import pets from '../../../assets/data/pets';
 import breeds from '../../../assets/data/breeds';
 import locations from '../../../assets/data/locations';
 import { colors } from '../../theme';
@@ -10,7 +9,8 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { API, graphqlOperation, Auth } from 'aws-amplify';
 import { Picker } from '@react-native-picker/picker';
 import { getUser } from '../../graphql/queries';
-import { updateUser } from '../../graphql/mutations';
+import { onCreateFavoritePet, onDeleteFavoritePet } from './subscriptions';
+import { listPets } from './queries';
 
 const Home = ({ navigation }) => {
   const [ filterVisible, setFilterVisible ] = useState(false);
@@ -19,6 +19,11 @@ const Home = ({ navigation }) => {
   const [ activeBreedFilter, setActiveBreedFilter ] = useState('any');
   const [ activeLocationFilter, setActiveLocationFilter ] = useState('any');
   const [ userImageUri, setUserImageUri ] = useState(null);
+  const [ pets, setPets ] = useState([]);
+  const [ userID, setUserID ] = useState(null);
+  const [ petsFiltered, setPetsFiltered ] = useState([]);
+  const [ petsUpdated, setPetsUpdated ] = useState([]);
+  const [ petsLoaded, setPetsLoaded ] = useState(false);
 
   const onSwipeLeft = (pet) => {
     console.log("Swiped left", pet.name);
@@ -31,45 +36,96 @@ const Home = ({ navigation }) => {
   const setFilters = (breed, location) => {
     setActiveBreedFilter(breed);
     setActiveLocationFilter(location);
-    console.log('Breed: ', activeBreedFilter, ' Location: ', activeLocationFilter);
   }
 
   const setData = () => {
-    petsFiltered = pets;
-    petsFiltered = petsFiltered.filter(function(pet) {
-      if(activeBreedFilter == 'any' && activeLocationFilter == 'any') {
+    let petsDataFiltered = pets.filter(function(pet) {
+      if(activeBreedFilter === 'any' && activeLocationFilter === 'any') {
         return pet;
       }
-      else if(activeBreedFilter != 'any' && activeLocationFilter == 'any') {
+      else if(activeBreedFilter !== 'any' && activeLocationFilter === 'any') {
         return pet.breed == activeBreedFilter;
       }
-      else if(activeBreedFilter == 'any' && activeLocationFilter != 'any') {
-        return pet.location == activeLocationFilter;
+      else if(activeBreedFilter === 'any' && activeLocationFilter !== 'any') {
+        return pet.shelter.location == activeLocationFilter;
       }
-      else if(activeBreedFilter != 'any' && activeLocationFilter != 'any') {
-        return pet.breed == activeBreedFilter && pet.location == activeLocationFilter;
-      }}).map(function({key, shelterID, name, image, description, detailedDescription, address, location, breed, age, since, healthCondition}) {
-        return {key, shelterID, name, image, description, detailedDescription, address, location, breed, age, since, healthCondition};
+      else if(activeBreedFilter !== 'any' && activeLocationFilter !== 'any') {
+        return pet.breed === activeBreedFilter && pet.shelter.location === activeLocationFilter;
+      }}).map(function({id, shelter, favoritePet, name, imageUri, description, breed, birthDate, inShelterSinceDate, healthCondition}) {
+        return {userID, id, shelter, favoritePet, name, imageUri, description, breed, birthDate, inShelterSinceDate, healthCondition};
       });
-      return petsFiltered;
+      setPetsFiltered(petsDataFiltered);
   }
 
   useEffect( () => {
-    const fetchUserData = async () => {
-        try {
-            const userInfo = await Auth.currentAuthenticatedUser();
-
-            const userData = await API.graphql(graphqlOperation(getUser, {id: userInfo.attributes.sub}));
-
-            setUserImageUri(userData.data.getUser.imageUri)
-
-        } catch (e) {
-            console.log(e);
-        }
+    setPetsFiltered([]);
+    setPetsUpdated([]);
+    const fetchPets = async () => {
+      try {
+        API.graphql({query: listPets}).then(result => setPets(result.data.listPets.items));
+      } catch (e) {
+        console.log(e);
+      }
     }
-    fetchUserData();
+    fetchPets();
   }, []);
 
+  useEffect( () => {
+    const fetchData = async () => {
+      try {
+        await Auth.currentAuthenticatedUser()
+              .then(userData => setUserID(userData.attributes.sub))
+      } catch (e) {
+          console.log(e);
+      }
+    }
+    fetchData();
+
+  }, [])
+
+  useEffect( () => {
+      console.log('Breed: ', activeBreedFilter, ' Location: ', activeLocationFilter);
+  }, [activeBreedFilter, activeLocationFilter])
+
+  useEffect( () => {
+    setData();
+  }, [pets, userID, activeBreedFilter, activeLocationFilter])
+
+  useEffect( () => {
+    if (userID) {
+      const setUserData = async () => {
+        await API.graphql(graphqlOperation(getUser, {id: userID}))
+          .then(userData => setUserImageUri(userData.data.getUser.imageUri));
+      }
+      setUserData();
+    }
+  }, [userID])
+
+  useEffect( () => {
+    const isPetFavorite = (favoritePetData, userID) => {
+      for(let i = 0; i < favoritePetData.items.length; i++) {
+        if (favoritePetData.items[i].userID === userID) {
+          let id = favoritePetData.items[i].id
+          return { favoriteID: id };
+        }
+      }
+      return { favoriteID: 'none' };
+    }
+
+    const setFavorites = () => {
+        let petsChecked = petsFiltered;
+    
+        try {
+          petsChecked.map(pet => Object.assign(pet, isPetFavorite(pet.favoritePet, userID)));
+        } catch(e) {
+          console.log(e);
+        }
+
+        setPetsUpdated(petsChecked);
+        setPetsLoaded(true);
+    }
+    setFavorites();
+  }, [pets, petsFiltered, userID])
 
   return (
       <View style={styles.pageContainer}>
@@ -144,13 +200,15 @@ const Home = ({ navigation }) => {
           </Modal>
         </View>
         <View style={styles.cardContainer}>
+        {petsLoaded &&
         <CardStack 
-            data = {setData()}
-            renderItem={({ item }) => 
-                <Card pet={item}/>
-            }
-            onSwipeLeft={onSwipeLeft}
-            onSwipeRight={onSwipeRight}/>    
+          data = {petsUpdated}
+          renderItem={({ item }) => 
+            <Card pet={item}/>
+          }
+          onSwipeLeft={onSwipeLeft}
+          onSwipeRight={onSwipeRight}/>
+        }    
         </View>
       </View>
   );
@@ -164,10 +222,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center', 
     alignItems: 'flex-start', 
     flex: 1,
-    backgroundColor: colors.blue,
+    backgroundColor: colors.white,
   },
   cardContainer: {
-    backgroundColor: colors.purple,
+    backgroundColor: colors.white,
     width: '100%',
     height: '100%',
     flex: 1,

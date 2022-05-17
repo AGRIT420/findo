@@ -1,49 +1,102 @@
 import React, { useEffect, useState } from 'react';
-import { View, SafeAreaView, Text, StyleSheet, Image, StatusBar, TouchableOpacity, TouchableNativeFeedback } from 'react-native';
+import { View, SafeAreaView, Text, StyleSheet, Image, Button, StatusBar, TouchableOpacity, TouchableNativeFeedback, ToastAndroid } from 'react-native';
 import PropTypes from 'prop-types';
 import { LinearGradient } from 'expo-linear-gradient';
 import { colors } from '../../theme';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { API, graphqlOperation, Auth } from 'aws-amplify';
-import { getUser } from '../../graphql/queries';
+import { getUser } from './queries';
 import { TextInput, TouchableWithoutFeedback } from 'react-native-gesture-handler';
-import { updateUser } from '../../graphql/mutations';
-import Pressable from 'react-native/Libraries/Components/Pressable/Pressable';
+import { createMessage } from '../../graphql/mutations';
+import { createChatRoom, createChatRoomUser, updateChatRoom } from './mutations';
 
-const ProfileEdit = ({ route, navigation }) => {
+const MeetingCreator = ({ route, navigation }) => {
+    const userID = route?.params?.userID
+    const shelterUserID = route?.params?.shelterUserID
+    const shelterName = route?.params?.shelterName
     const imageUri = route?.params?.imageUri
-    const username = route?.params?.username
-    const firstName = route?.params?.firstName
-    const lastName = route?.params?.lastName
-    const birthDate = route?.params?.birthDate
-    const city = route?.params?.city
+    const [meetingDate, setMeetingDate] = useState('');
+    const [meetingHour, setMeetingHour] = useState('');
+    const [additionalInfo, setAdditionalInfo] = useState('');
+    //const [chatRoomID, setChatRoomID] = useState('');
 
-    const [ newImageUri, setNewImageUri ] = useState(imageUri);
-    const [ newFirstName, setNewFirstName ] = useState(firstName);
-    const [ newLastName, setNewLastName ] = useState(lastName);
-    const [ newBirthDate, setNewBirthDate ] = useState(birthDate);
-    const [ newCity, setNewCity ] = useState(city);
 
-    const updateUserData = async () => {
+    const updateChatRoomLastMessage = async (chatRoomID, messageID) => {
         try {
-            const userInfo = await Auth.currentAuthenticatedUser();
-
-            const data = {
-                id: userInfo.attributes.sub,
-                name: username,
-                imageUri: newImageUri,
-                firstName: newFirstName,
-                lastName: newLastName,
-                city: newCity,
-                birthDate: newBirthDate,
-            }
-
-            const update = await API.graphql({ query: updateUser, variables: {input: data}});
-            
-            navigation.goBack()
-
+            await API.graphql(graphqlOperation(updateChatRoom, {input: {id: chatRoomID, lastMessageID: messageID}}));
         } catch (e) {
             console.log(e);
+        }
+    }
+
+    const sendProposal = async (chatRoomID) => {
+        if(meetingDate && meetingHour) {
+            try {
+                const newMessageData = await API.graphql(graphqlOperation(createMessage, {input: {messageType: "proposal", status: "unanswered", content: additionalInfo, suggestedDate: meetingDate, suggestedHour: meetingHour, userID: userID, chatRoomID: chatRoomID}}));
+                setMeetingDate('');
+                setMeetingHour('');
+                setAdditionalInfo('');
+                await updateChatRoomLastMessage(chatRoomID, newMessageData.data.createMessage.id);
+            } catch(e) {
+               console.log(e);
+            } 
+        }
+    }
+
+
+    const onConfirm = async () => {
+        try {
+            const myUserData = await API.graphql(graphqlOperation(getUser, {id: userID}));
+
+            if(myUserData.data.getUser.chatRoomUser.items.length > 0) {
+                for(let i = 0; i < myUserData.data.getUser.chatRoomUser.items.length; i++) {
+                    for(let j = 0; j < myUserData.data.getUser.chatRoomUser.items[i].chatRoom.chatRoomUsers.items.length; j++) {
+                        if(myUserData.data.getUser.chatRoomUser.items[i].chatRoom.chatRoomUsers.items[j].user.id === shelterUserID) {
+                            //setChatRoomID(myUserData.data.getUser.chatRoomUser.items[i].chatRoom.id)
+                            console.log("Chat room already exists");
+                            
+                            sendProposal(myUserData.data.getUser.chatRoomUser.items[i].chatRoom.id);
+
+                            ToastAndroid.showWithGravityAndOffset("Wysłano propozycję spotkania", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
+
+                            navigation.goBack();
+                            return;
+                        }
+                    }
+                }
+            }
+        
+            const newChatRoomData = await API.graphql(graphqlOperation(createChatRoom, { input: {lastMessageID: ""} }))
+
+            if(!newChatRoomData.data) {
+                console.log('Failed to create a chat room');
+                return;
+            }
+            
+            const newChatRoom = newChatRoomData.data.createChatRoom;
+
+            await API.graphql(graphqlOperation(createChatRoomUser, {
+                input: {
+                    userID: shelterUserID,
+                    chatRoomID: newChatRoom.id,
+                }
+            })) 
+
+            await API.graphql(graphqlOperation(createChatRoomUser, {
+                input: {
+                    userID: userID,
+                    chatRoomID: newChatRoom.id,
+                }
+            }))
+
+            sendProposal(newChatRoom.id);
+
+            ToastAndroid.showWithGravityAndOffset("Wysłano propozycję spotkania", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
+
+            navigation.goBack();
+
+        } catch (e) {
+            console.error(e);
         }
     }
 
@@ -65,29 +118,23 @@ const ProfileEdit = ({ route, navigation }) => {
                     </TouchableOpacity>
                 </View>
                 <View style={styles.titleContainer}>
-                    <Text style={styles.title}>edytuj profil</Text>
+                    <Text style={styles.title}>umów się</Text>
                 </View>
             </View>
             <View style={styles.content}>
                 <View style={styles.inputsContainer}>
-                    <Text style={styles.inputLabel}>Nazwa użytkownika</Text>
-                    <TextInput editable={false} style={[styles.input, {color: colors.lightGray}]} value={username}/>
-                    <Text style={styles.inputLabel}>Imię</Text>
-                    <TextInput editable={true} style={styles.input} value={newFirstName} onChangeText={setNewFirstName}/>
-                    <Text style={styles.inputLabel}>Nazwisko</Text>
-                    <TextInput editable={true} style={styles.input} value={newLastName} onChangeText={setNewLastName}/>
-                    <Text style={styles.inputLabel}>Data urodzenia</Text>
-                    <Pressable style={{width: '100%'}}>
-                        <TextInput editable={false} style={styles.input} value={newBirthDate}  onChangeText={setNewBirthDate}/>
-                    </Pressable>
-                    <Text style={styles.inputLabel}>Miejsce zamieszkania</Text>
-                    <TextInput editable={true} style={styles.input} value={newCity} onChangeText={setNewCity}/>
+                    <Text style={styles.inputLabel}>Proponowana data spotkania</Text>
+                    <TextInput editable={true} style={styles.input} onChangeText={setMeetingDate}/>
+                    <Text style={styles.inputLabel}>Proponowana godzina</Text>
+                    <TextInput editable={true} style={styles.input} onChangeText={setMeetingHour}/>
+                    <Text style={styles.inputLabel}>Dodatkowe informacje/uwagi</Text>
+                    <TextInput editable={true} style={styles.input} onChangeText={setAdditionalInfo} multiline={true} numberOfLines={4}/>
                 </View>
                 <View style={styles.buttonsContainer}>
                     <TouchableOpacity onPress={() => navigation.goBack()}>
                         <Text style={styles.cancelText}>Anuluj</Text>
                     </TouchableOpacity>
-                    <TouchableNativeFeedback onPress={updateUserData}>
+                    <TouchableNativeFeedback onPress={onConfirm}>
                         <LinearGradient
                             start={{x: 0.0, y: 0.0}} end={{x: 1.0, y: 0.0}}
                             locations={[0, 1.0]}
@@ -224,4 +271,4 @@ const styles = StyleSheet.create({
     },
   })
 
-export default ProfileEdit;
+export default MeetingCreator;

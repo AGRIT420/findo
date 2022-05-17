@@ -1,48 +1,106 @@
-import React, { useState } from 'react';
-import { View, SafeAreaView, Text, StyleSheet, StatusBar, ScrollView, TouchableNativeFeedback, TouchableOpacity, Image } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, SafeAreaView, Text, StyleSheet, StatusBar, ScrollView, ToastAndroid, TouchableNativeFeedback, TouchableOpacity, Image } from 'react-native';
 import PropTypes from 'prop-types';
 import { LinearGradient } from 'expo-linear-gradient';
 import { colors } from '../../theme';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { API, graphqlOperation, Auth } from "aws-amplify";
-import { createChatRoom, createChatRoomUser, } from '../../graphql/mutations';
-import { listChatRoomUsers, getUser, getChatRoom, getChatRoomUser } from '../../graphql/queries';
+import { createFavoritePet, deleteFavoritePet, createChatRoom, createChatRoomUser } from './mutations';
+import { getUser } from './queries';
+import { getPet } from '../../graphql/queries';
+import { AntDesign } from '@expo/vector-icons';
 
 const Details = ({ route, navigation }) => {
+    const petID = route?.params?.petID
     const shelterID = route?.params?.shelterID
-    const image = route?.params?.image
+    const shelterUserID = route?.params?.shelterUserID
+    const userID = route?.params?.userID
     const name = route?.params?.name
-    const address = route?.params?.address
+    const shelterName = route?.params?.shelterName
+    const location = route?.params?.location
+    const imageUri = route?.params?.imageUri
     const description = route?.params?.description
-    const age = route?.params?.age
-    const since = route?.params?.since
+    const breed = route?.params?.breed
+    const birthDate = route?.params?.birthDate
+    const inShelterSinceDate = route?.params?.inShelterSinceDate
     const healthCondition = route?.params?.healthCondition
-    const user = route?.params?.user
+
+    const [favorite, setFavorite] = useState(false);
+    const [favoriteID, setFavoriteID] = useState(null);
+
+    useEffect( () => {
+        const fetchPetData = async () => {
+            await API.graphql(graphqlOperation(getPet, {id: petID}))
+                .then((data) => checkIfPetIsFavorite(data.data.getPet.favoritePet.items))
+        }
+        const checkIfPetIsFavorite = (favoritesList) => {
+           if (favoritesList.length > 0) {
+               for (let i = 0; i < favoritesList.length; i++) {
+                    if (favoritesList[i].userID === userID) {
+                        setFavorite(true);
+                        setFavoriteID(favoritesList[i].id);
+                        return;
+                    }
+               }
+           }
+           setFavorite(false);
+        }
+        fetchPetData();
+    }, [petID])
+
+    const modifyFavoriteHandler = () => {
+        if (favorite) {
+          removeFromFavorites();
+          ToastAndroid.showWithGravityAndOffset("Usunięto z ulubionych", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
+          console.log(name, " removed from favorites...");
+        } else {
+          addToFavorites();
+          ToastAndroid.showWithGravityAndOffset("Dodano do ulubionych", ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 50);
+          console.log(name, " added to favorites...");
+        }
+    }
+
+    const removeFromFavorites = async () => {
+        try {
+          await API.graphql(graphqlOperation(deleteFavoritePet, {input: {id: favoriteID}}))
+            .then(() => setFavorite(false));
+        } catch(e) {
+          console.log(e);
+        }
+      }
+  
+    const addToFavorites = async () => {
+        try {
+          await API.graphql(graphqlOperation(createFavoritePet, {input: {petID: petID, userID: userID}}))
+            .then(result => setFavoriteID(result.data.createFavoritePet.id))
+            .then(() => setFavorite(true));
+        } catch(e) {
+          console.log(e);
+        }
+    }
 
     const askQuestionHandler = async () => {
-        
         try {
             const userInfo = await Auth.currentAuthenticatedUser();
-            const otherUserInfo = await API.graphql(graphqlOperation(getUser, {id: shelterID}));
+            const myUserData = await API.graphql(graphqlOperation(getUser, {id: userInfo.attributes.sub}));
 
-            const chatRoomsUser1 = await API.graphql(graphqlOperation(listChatRoomUsers, {filter: {userID: {contains: userInfo.attributes.sub}}}))
-            const chatRoomsUser2 = await API.graphql(graphqlOperation(listChatRoomUsers, {filter: {userID: {contains: shelterID}}}))
-
-            for(let i = 0; i < chatRoomsUser1.data.listChatRoomUsers.items.length; i++) {
-                for(let j = 0; j < chatRoomsUser2.data.listChatRoomUsers.items.length; j++) {
-                    if(chatRoomsUser1.data.listChatRoomUsers.items[i].chatRoom.id === chatRoomsUser2.data.listChatRoomUsers.items[j].chatRoom.id) {
-                        console.log("Chat room already exists");
-                        navigation.navigate('ConversationScreen', {
-                            id: chatRoomsUser1.data.listChatRoomUsers.items[i].chatRoom.id,
-                            username: otherUserInfo.data.getUser.name,
-                            imageUri: otherUserInfo.data.getUser.imageUri,
-                        })
-                        return;
+            if(myUserData.data.getUser.chatRoomUser.items.length > 0) {
+                for(let i = 0; i < myUserData.data.getUser.chatRoomUser.items.length; i++) {
+                    for(let j = 0; j < myUserData.data.getUser.chatRoomUser.items[i].chatRoom.chatRoomUsers.items.length; j++) {
+                        if(myUserData.data.getUser.chatRoomUser.items[i].chatRoom.chatRoomUsers.items[j].user.id === shelterUserID) {
+                            console.log("Chat room already exists");
+                            navigation.navigate('ConversationScreen', {
+                                id: myUserData.data.getUser.chatRoomUser.items[i].chatRoom.id,
+                                username: shelterName,
+                                imageUri: imageUri,
+                            })
+                            return;
+                        }
                     }
                 }
             }
         
-            const newChatRoomData = await API.graphql(graphqlOperation(createChatRoom, { input: {} }))
+            const newChatRoomData = await API.graphql(graphqlOperation(createChatRoom, { input: {lastMessageID: ""} }))
 
             if(!newChatRoomData.data) {
                 console.log('Failed to create a chat room');
@@ -53,24 +111,23 @@ const Details = ({ route, navigation }) => {
 
             await API.graphql(graphqlOperation(createChatRoomUser, {
                 input: {
-                    userID: shelterID,
+                    userID: shelterUserID,
                     chatRoomID: newChatRoom.id,
                 }
             })) 
 
             await API.graphql(graphqlOperation(createChatRoomUser, {
                 input: {
-                    userID: userInfo.attributes.sub,
+                    userID: userID,
                     chatRoomID: newChatRoom.id,
                 }
             }))
 
             navigation.navigate('ConversationScreen', {
                 id: newChatRoom.id,
-                username: "test",
+                username: shelterName,
+                imageUri: imageUri,
             })
-
-
 
         } catch (e) {
             console.error(e);
@@ -78,6 +135,12 @@ const Details = ({ route, navigation }) => {
     }
   
       const makeAppointmentHandler = () => {
+        navigation.navigate('MeetingCreatorScreen', {
+            userID: userID,
+            shelterUserID: shelterUserID,
+            shelterName: shelterName,
+            imageUri: imageUri,
+        })
         console.log("Umow sie");
     }
 
@@ -88,11 +151,13 @@ const Details = ({ route, navigation }) => {
                 <View style={styles.iconContainer}>
                     <TouchableOpacity onPress={
                         () => navigation.goBack()}>
-                        <FontAwesome5
-                        name="chevron-left" 
-                        size={22} 
-                        color={colors.black}
-                        style={styles.icon}/>
+                        <View style={styles.backButton}>
+                            <FontAwesome5
+                                name="chevron-left" 
+                                size={22} 
+                                color={colors.black}
+                                style={styles.icon}/>
+                        </View>
                     </TouchableOpacity>
                 </View>
                 <View style={styles.titleContainer}>
@@ -100,16 +165,24 @@ const Details = ({ route, navigation }) => {
                 </View>
             </View>
             <View style={styles.content}>
-                <Text style={styles.name}>{name}</Text>
-                <Text style={styles.address}>{address}</Text>
+                <View style={styles.petNameContainer}>
+                    <Text style={styles.name}>{name}</Text>
+                    <TouchableOpacity onPress={modifyFavoriteHandler}>
+                        <AntDesign
+                            name={favorite ? "heart" : "hearto"}
+                            size={24} 
+                            color={colors.black}/>
+                    </TouchableOpacity>
+                </View>
+                <Text style={styles.address}>{shelterName}</Text>
                 <View style={styles.detailsContainer}>
                     <View style={styles.detailsRow}>
-                        <Text style={styles.detailName}>Wiek: </Text>
-                        <Text style={styles.detail}>{age}</Text>
+                        <Text style={styles.detailName}>Data urodzenia (przybliżona): </Text>
+                        <Text style={styles.detail}>{birthDate}</Text>
                     </View>
                     <View style={styles.detailsRow}>
                         <Text style={styles.detailName}>W schronisku od: </Text>
-                        <Text style={styles.detail}>{since}</Text>
+                        <Text style={styles.detail}>{inShelterSinceDate}</Text>
                     </View>
                     <View style={styles.detailsRow}>
                         <Text style={styles.detailName}>Stan zdrowia: </Text>
@@ -142,18 +215,34 @@ const Details = ({ route, navigation }) => {
 Details.propTypes = {
     route: PropTypes.shape({
         params: PropTypes.shape({
-            image: PropTypes.string,
+            petID: PropTypes.string,
+            shelterID: PropTypes.string,
+            userID: PropTypes.string,
             name: PropTypes.string,
-            address: PropTypes.string,
+            shelterName: PropTypes.string,
+            location: PropTypes.string,
+            imageUri: PropTypes.string,
             description: PropTypes.string,
+            breed: PropTypes.string,
+            birthDate: PropTypes.string,
+            inShelterSinceDate: PropTypes.string,
+            healthCondition: PropTypes.string,
         }),
     }),
     navigation: PropTypes.shape({
         params: PropTypes.shape({
-            image: PropTypes.string,
+            petID: PropTypes.string,
+            shelterID: PropTypes.string,
+            userID: PropTypes.string,
             name: PropTypes.string,
-            address: PropTypes.string,
-            description: PropTypes.description,
+            shelterName: PropTypes.string,
+            location: PropTypes.string,
+            imageUri: PropTypes.string,
+            description: PropTypes.string,
+            breed: PropTypes.string,
+            birthDate: PropTypes.string,
+            inShelterSinceDate: PropTypes.string,
+            healthCondition: PropTypes.string,
         }),
         goBack: PropTypes.func,
     }),
@@ -162,18 +251,34 @@ Details.propTypes = {
 Details.defaultProps = {
     route: {
         params: {
-            image: 'https://images.unsplash.com/photo-1601662528567-526cd06f6582?ixlib=rb-1.2.1&q=80&fm=jpg',
+            petID: '',
+            shelterID: '',
+            userID: '',
             name: '',
-            address: '',
+            shelterName: '',
+            location: '',
+            imageUri: '',
             description: '',
+            breed: '',
+            birthDate: '',
+            inShelterSinceDate: '',
+            healthCondition: '',
         },
     },
     navigation: {
         params: {
-            image: 'https://images.unsplash.com/photo-1601662528567-526cd06f6582?ixlib=rb-1.2.1&q=80&fm=jpg',
+            petID: '',
+            shelterID: '',
+            userID: '',
             name: '',
-            address: '',
+            shelterName: '',
+            location: '',
+            imageUri: '',
             description: '',
+            breed: '',
+            birthDate: '',
+            inShelterSinceDate: '',
+            healthCondition: '',
         },
         goBack: () => null,
     }
@@ -198,9 +303,21 @@ const styles = StyleSheet.create({
         backgroundColor: colors.white,
         paddingVertical: 2,
     },
+    backButton: {
+        width: 80,
+        height: 40,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 30,
+        backgroundColor: colors.white,
+    },
     iconContainer: {
         width: '5%',
         alignItems: 'center',
+    },
+    icon: {
+        justifyContent: 'flex-start',
+        alignSelf: 'center',
     },
     titleContainer: {
         width: '95%',
@@ -212,14 +329,15 @@ const styles = StyleSheet.create({
         fontSize: 32,
         color: colors.blue,
     },
-    icon: {
-        justifyContent: 'flex-start',
-        alignSelf: 'flex-start',
-    },
     content: {
         width: '90%',
         height: '100%',
         paddingTop: 8,
+    },
+    petNameContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
     },
     name: {
         fontFamily: 'oxygen_bold',
@@ -243,13 +361,13 @@ const styles = StyleSheet.create({
         fontFamily: 'oxygen_regular',
         fontSize: 16,
         color: colors.black,
-        lineHeight: 20,
+        lineHeight: 24,
     },
     detail: {
         fontFamily: 'oxygen_bold',
         fontSize: 16,
         color: colors.black,
-        lineHeight: 20,
+        lineHeight: 24,
     },
     detailsRow: {
         flexDirection: 'row',

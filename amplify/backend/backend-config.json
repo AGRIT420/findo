@@ -39,7 +39,16 @@
           },
           "additionalAuthenticationProviders": []
         }
-      }
+      },
+      "dependsOn": [
+        {
+          "category": "auth",
+          "resourceName": "findocf4b4d32",
+          "attributes": [
+            "UserPoolId"
+          ]
+        }
+      ]
     }
   }
 }

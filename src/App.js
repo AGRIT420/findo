@@ -9,11 +9,19 @@ import * as Font from 'expo-font';
 import { LogBox } from 'react-native';
 import AppLoading from 'expo-app-loading';
 
+/*
 LogBox.ignoreLogs([
     "Overwriting fontFamily style attribute preprocessor"
 ]);
+*/
 
-Amplify.configure(awsconfig)
+LogBox.ignoreLogs([
+    "[react-native-gesture-handler] Seems like you\'re using an old API with gesture components, check out new Gestures system!",
+    "expo-app-loading is deprecated in favor of expo-splash-screen: use SplashScreen.preventAutoHideAsync() and SplashScren.hideAsync() instead. https://docs.expo.dev/versions/latest/sdk/splash-screen/",
+]);
+
+
+Amplify.configure(awsconfig);
 
 import useFonts from "./hooks/useFonts";
 

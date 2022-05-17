@@ -1,29 +1,39 @@
-import React from 'react';
-import { Text, ImageBackground, View, StyleSheet } from 'react-native';
+import React, { useEffect, useState, useRef } from 'react';
+import { Text, ImageBackground, View, StyleSheet, ToastAndroid } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { colors } from '../../theme';
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import { API, graphqlOperation, Auth } from 'aws-amplify';
+import { getUser } from '../../graphql/queries';
+import { createFavoritePet, deleteFavoritePet } from '../../graphql/mutations';
+import { TouchableWithoutFeedback, TapGestureHandler, State, TouchableOpacity } from 'react-native-gesture-handler';
+import { AntDesign } from '@expo/vector-icons';
+import { onCreateFavoritePet, onDeleteFavoritePet } from './subscriptions';
 
 const Card = (props) => {
-    const { shelterID, image, name, address, description, age, since, healthCondition } = props.pet;
-    
+    const { userID, id, shelter, favoritePet, name, imageUri, description, breed, birthDate, inShelterSinceDate, healthCondition, favoriteID } = props.pet;
+
     const navigation = useNavigation();
 
     return (
       <View style={styles.root}>
         <TouchableWithoutFeedback onPress={() => navigation.navigate('DetailsScreen', {
-                shelterID: shelterID,
-                image: image,
-                name: name,
-                address: address,
-                description: description,
-                age: age,
-                since: since,
-                healthCondition: healthCondition,
-              })}> 
+          userID: userID,
+          petID: id,
+          shelterID: shelter.id,
+          shelterUserID: shelter.user.id,
+          name: name,
+          shelterName: shelter.name,
+          location: shelter.location,
+          imageUri: imageUri,
+          description: description,
+          breed: breed,
+          birthDate: birthDate,
+          inShelterSinceDate: inShelterSinceDate,
+          healthCondition: healthCondition,
+        })}>
           <View style={styles.face}>
-            <ImageBackground source={{ uri: image }} style={styles.image}>
+            <ImageBackground source={{ uri: imageUri }} style={styles.image}>
               <LinearGradient
                 start={{x: 0.0, y: 0.0}} end={{x: 1.0, y: 0.0}}
                 locations={[0, 1.0]}
@@ -31,13 +41,13 @@ const Card = (props) => {
                 style={styles.cardBanner}>
                 <View style={styles.cardInner}>
                   <Text style={styles.name}>{name}</Text>
-                  <Text style={styles.address}>{address}</Text>
+                  <Text style={styles.address}>{shelter.name}</Text>
                   <Text numberOfLines={1} style={styles.description}>{description}</Text>
                 </View>
               </LinearGradient>
             </ImageBackground>
           </View>
-          </TouchableWithoutFeedback>
+        </TouchableWithoutFeedback>
       </View>
     )
 }

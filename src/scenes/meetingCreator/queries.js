@@ -28,9 +28,6 @@ export const getUser = /* GraphQL */ `
                 content
                 createdAt
                 updatedAt
-                suggestedDate
-                suggestedHour
-                messageType
                 user {
                   id
                   name

@@ -7,6 +7,7 @@ import Profile from '../../../scenes/profile';
 import Details from '../../../scenes/details';
 import Conversation from '../../../scenes/conversation';
 import ProfileEdit from '../../../scenes/profileEdit';
+import MeetingCreator from '../../../scenes/meetingCreator';
 
 const Stack = createStackNavigator();
 
@@ -32,6 +33,11 @@ export const HomeNavigator = () => (
         <Stack.Screen
             name="ConversationScreen"
             component={Conversation}
+        />
+
+        <Stack.Screen
+            name="MeetingCreatorScreen"
+            component={MeetingCreator}
         />
 
         <Stack.Screen
@@ -101,6 +107,11 @@ export const DetailsNavigator = () => (
         <Stack.Screen
             name="ConversationScreen"
             component={Conversation}
+        />
+
+        <Stack.Screen
+            name="MeetingCreatorScreen"
+            component={MeetingCreator}
         />
 
     </Stack.Navigator>

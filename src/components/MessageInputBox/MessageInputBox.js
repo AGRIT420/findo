@@ -4,6 +4,7 @@ import { colors } from '../../theme';
 import { Entypo, Ionicons } from '@expo/vector-icons';
 import { API, Auth, graphqlOperation } from 'aws-amplify';
 import { createMessage } from '../../graphql/mutations';
+import { updateChatRoom } from './mutations';
 
 const MessageInputBox = (props) => {
     const { chatRoomID } = props;
@@ -14,20 +15,27 @@ const MessageInputBox = (props) => {
         const fetchUser = async () => {
             const userInfo = await Auth.currentAuthenticatedUser();
             setMyUserID(userInfo.attributes.sub);
-        
         }
         fetchUser();
     }, [])
 
+    const updateChatRoomLastMessage = async (messageID) => {
+        try {
+            await API.graphql(graphqlOperation(updateChatRoom, {input: {id: chatRoomID, lastMessageID: messageID}}));
+        } catch (e) {
+            console.log(e);
+        }
+    }
 
     const onPress = async () => {
         if(message) {
             try {
-                await API.graphql(graphqlOperation(createMessage, {input: {content: message, userID: myUserID, chatRoomID: chatRoomID}}));
-                setMessage('');
+                const newMessageData = await API.graphql(graphqlOperation(createMessage, {input: {messageType: "text", content: message, userID: myUserID, chatRoomID: chatRoomID}}));
+                await updateChatRoomLastMessage(newMessageData.data.createMessage.id);
             } catch(e) {
                console.log(e);
             }
+            setMessage('');
         }
     }
 
