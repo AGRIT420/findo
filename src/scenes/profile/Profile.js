@@ -80,16 +80,16 @@ const Profile = ({ navigation }) => {
                         <LinearGradient
                             start={{x: 0.0, y: 0.0}} end={{x: 1.0, y: 0.0}}
                             locations={[0, 1.0]}
-                            colors={[colors.purple, colors.blue]}
+                            colors={[colors.darkBlue, colors.blue]}
                             style={styles.button}>
                             <Text style={styles.buttonText}>Edytuj profil</Text>
                         </LinearGradient>
                     </TouchableNativeFeedback>
-                    <TouchableNativeFeedback>
+                    <TouchableNativeFeedback onPress={ () => navigation.navigate('InfoScreen')}>
                         <LinearGradient
                             start={{x: 0.0, y: 0.0}} end={{x: 1.0, y: 0.0}}
                             locations={[0, 1.0]}
-                            colors={[colors.purple, colors.blue]}
+                            colors={[colors.darkBlue, colors.blue]}
                             style={styles.button}>
                             <Text style={styles.buttonText}>Informacje o aplikacji</Text>
                         </LinearGradient>

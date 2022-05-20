@@ -289,14 +289,15 @@ const styles = StyleSheet.create({
     fontFamily: 'oxygen_bold',
     fontSize: 14,
     color: colors.blue,
-    paddingHorizontal: 8,
+    paddingHorizontal: 10,
   },
   cancelText: {
     alignSelf: 'flex-end',
     fontFamily: 'oxygen_regular',
     fontSize: 14,
     color: colors.gray,
-    paddingHorizontal: 8,
+    paddingHorizontal: 10,
+    bottom: 1,
   },
   textStyle: {
     color: "white",

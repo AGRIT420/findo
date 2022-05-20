@@ -8,6 +8,7 @@ import Details from '../../../scenes/details';
 import Conversation from '../../../scenes/conversation';
 import ProfileEdit from '../../../scenes/profileEdit';
 import MeetingCreator from '../../../scenes/meetingCreator';
+import Info from '../../../scenes/info/Info';
 
 const Stack = createStackNavigator();
 
@@ -48,6 +49,11 @@ export const HomeNavigator = () => (
         <Stack.Screen
             name="ProfileEditScreen"
             component={ProfileEdit}
+        />
+
+        <Stack.Screen
+            name="InfoScreen"
+            component={Info}
         />
 
     </Stack.Navigator>

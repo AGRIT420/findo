@@ -20,11 +20,26 @@ const colors = {
     ultraLightGray: '#e6e6e6',
     blue: '#6274e7',
     darkBlue: '#4053c9',
+    darkBlueLighted: '#4759c9',
     lightBlue: '#b5bfff',
     ultraLightBlue: '#bac2f7',
+    lightPurple: '#9f66bd',
     purple: '#8752a3',
-    darkPurple: '#512766',
-    */
+    darkPurple: '#512766',*/
+    /*
+    white: '#000000',
+    black: '#ffffff',
+    gray: '#7d7d7d',
+    lightGray: '#333333',
+    ultraLightGray: '#191919',
+    blue: '#6274e7',
+    darkBlue: '#4053c9',
+    darkBlueLighted: '#4759c9',
+    lightBlue: '#b5bfff',
+    ultraLightBlue: '#bac2f7',
+    lightPurple: '#9f66bd',
+    purple: '#8752a3',
+    darkPurple: '#512766',*/
 }
 
 export default colors;
