@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, SafeAreaView, StatusBar, StyleSheet, Text, TouchableOpacity, Image, Modal } from 'react-native';
+import { View, StatusBar, StyleSheet, Text, TouchableOpacity, Image, Modal } from 'react-native';
 import Card from '../../components/Card';
 import CardStack from '../../components/CardStack';
 import breeds from '../../../assets/data/breeds';
@@ -9,8 +9,8 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { API, graphqlOperation, Auth } from 'aws-amplify';
 import { Picker } from '@react-native-picker/picker';
 import { getUser } from '../../graphql/queries';
-import { onCreateFavoritePet, onDeleteFavoritePet } from './subscriptions';
 import { listPets } from './queries';
+import Dialog from "react-native-dialog";
 
 const Home = ({ navigation }) => {
   const [ filterVisible, setFilterVisible ] = useState(false);
@@ -32,6 +32,16 @@ const Home = ({ navigation }) => {
   const onSwipeRight = (pet) => {
     console.log("Swiped right", pet.name);
   };
+
+  const [dialogVisible, setDialogVisible] = useState(false);
+
+    const displayDialog = () => {
+      setDialogVisible(true);
+    }
+
+    const dismissDialog = () => {
+      setDialogVisible(false);
+  }
 
   const setFilters = (breed, location) => {
     setActiveBreedFilter(breed);
@@ -139,12 +149,18 @@ const Home = ({ navigation }) => {
               color={colors.black}/>}
           </TouchableOpacity>
           <Text style={styles.title}>findo</Text>
-          <TouchableOpacity onPress={() => setFilterVisible(true)}>
+          <TouchableOpacity onPress={() => setFilterVisible(true)} onLongPress={displayDialog}>
             <FontAwesome5
               name="sliders-h" 
               size={20} 
               color={colors.black}/>
           </TouchableOpacity>
+
+          <Dialog.Container visible={dialogVisible}>
+            <Dialog.Title>Filtry</Dialog.Title>
+            <Dialog.Description>Aktywuj filtry, aby wyświetlać jedynie sprecyzowane, interesujące Cię wyniki.</Dialog.Description>
+            <Dialog.Button label="Ok" onPress={dismissDialog}/>
+          </Dialog.Container>
 
           <Modal
             animationType="none"

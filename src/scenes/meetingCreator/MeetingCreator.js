@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, SafeAreaView, Text, StyleSheet, Image, Button, StatusBar, TouchableOpacity, TouchableNativeFeedback, ToastAndroid } from 'react-native';
+import { View, SafeAreaView, Text, StyleSheet, Image, Button, StatusBar, TouchableOpacity, TouchableNativeFeedback, Pressable, ToastAndroid } from 'react-native';
 import PropTypes from 'prop-types';
 import { LinearGradient } from 'expo-linear-gradient';
 import { colors } from '../../theme';
@@ -9,6 +9,10 @@ import { getUser } from './queries';
 import { TextInput, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { createMessage } from '../../graphql/mutations';
 import { createChatRoom, createChatRoomUser, updateChatRoom } from './mutations';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import moment from 'moment-timezone';
+import 'moment/locale/pl';
+import { Platform } from '@aws-amplify/core';
 
 const MeetingCreator = ({ route, navigation }) => {
     const userID = route?.params?.userID
@@ -20,6 +24,28 @@ const MeetingCreator = ({ route, navigation }) => {
     const [additionalInfo, setAdditionalInfo] = useState('');
     //const [chatRoomID, setChatRoomID] = useState('');
 
+    const [datePicker, setDatePicker] = useState(false);
+    const [date, setDate] = useState(new Date());
+    const [timePicker, setTimePicker] = useState(false);
+    const [time, setTime] = useState(new Date(Date.now()));
+
+    const showDatePicker = () => {
+        setDatePicker(true);
+    }
+    
+    const showTimePicker = () => {
+        setTimePicker(true);
+    }
+
+    const onDateSelected = (event, value) => {
+        setDate(value);
+        setDatePicker(false);
+    }
+
+    const onTimeSelected = (event, value) => {
+        setTime(value);
+        setTimePicker(false);
+    }
 
     const updateChatRoomLastMessage = async (chatRoomID, messageID) => {
         try {
@@ -30,9 +56,9 @@ const MeetingCreator = ({ route, navigation }) => {
     }
 
     const sendProposal = async (chatRoomID) => {
-        if(meetingDate && meetingHour) {
+        if(date && time) {
             try {
-                const newMessageData = await API.graphql(graphqlOperation(createMessage, {input: {messageType: "proposal", status: "unanswered", content: additionalInfo, suggestedDate: meetingDate, suggestedHour: meetingHour, userID: userID, chatRoomID: chatRoomID}}));
+                const newMessageData = await API.graphql(graphqlOperation(createMessage, {input: {messageType: "proposal", status: "unanswered", content: additionalInfo, suggestedDate: date, suggestedHour: time, userID: userID, chatRoomID: chatRoomID}}));
                 setMeetingDate('');
                 setMeetingHour('');
                 setAdditionalInfo('');
@@ -124,9 +150,36 @@ const MeetingCreator = ({ route, navigation }) => {
             <View style={styles.content}>
                 <View style={styles.inputsContainer}>
                     <Text style={styles.inputLabel}>Proponowana data spotkania</Text>
-                    <TextInput editable={true} style={styles.input} onChangeText={setMeetingDate}/>
+                    <Pressable style={{width: '100%'}} onPress={showDatePicker} title="Proponowana data spotkania">
+                        <TextInput editable={false} style={styles.input} value={(moment(date.toDateString()).format("DD MMMM YYYY"))}/>
+                    </Pressable>
+                    {datePicker && (
+                        <DateTimePicker
+                            value={date}
+                            mode={'date'}
+                            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                            is24Hour={true}
+                            onChange={onDateSelected}
+                            style={styles.datePicker}
+                            minimumDate={new Date()}
+                        />
+                    )}
+
+                    {timePicker && (
+                        <DateTimePicker
+                            value={time}
+                            mode={'time'}
+                            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                            is24Hour={true}
+                            onChange={onTimeSelected}
+                            style={styles.datePicker}
+                        />
+                    )}
                     <Text style={styles.inputLabel}>Proponowana godzina</Text>
-                    <TextInput editable={true} style={styles.input} onChangeText={setMeetingHour}/>
+                    <Pressable style={{width: '100%'}} onPress={showTimePicker} title="Proponowana data spotkania">
+                        <TextInput editable={false} style={styles.input} value={time.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}/>
+                    </Pressable>
+                    
                     <Text style={styles.inputLabel}>Dodatkowe informacje/uwagi</Text>
                     <TextInput editable={true} style={styles.input} onChangeText={setAdditionalInfo} multiline={true} numberOfLines={4}/>
                 </View>

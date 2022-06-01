@@ -70,11 +70,13 @@ const ProposalRectangle = (props) => {
                 <Text style={styles.title}>Propozycja spotkania adopcyjnego</Text>
                 <View style={styles.rowText}>
                     <Text style={styles.detailName}>Data: </Text>
-                    <Text style={styles.detailData}>{messageData.suggestedDate}</Text>
+                    {message.suggestedDate &&
+                    <Text style={styles.detailData}>{moment(messageData.suggestedDate).format('DD MMMM YYYY')}</Text>}
                 </View>
                 <View style={styles.rowText}>
                     <Text style={styles.detailName}>Godzina: </Text>
-                    <Text style={styles.detailData}>{messageData.suggestedHour}</Text>
+                    {message.suggestedHour &&
+                    <Text style={styles.detailData}>{moment(messageData.suggestedHour).format('HH:mm')}</Text>}
                 </View>
                 <Text style={styles.detailName}>Dodatkowe informacje/uwagi: </Text>
                 <Text style={styles.detailData}>{messageData.content}</Text>

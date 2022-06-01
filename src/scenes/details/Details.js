@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, SafeAreaView, Text, StyleSheet, StatusBar, ScrollView, ToastAndroid, TouchableNativeFeedback, TouchableOpacity, Image } from 'react-native';
+import { View, SafeAreaView, Text, StyleSheet, StatusBar, ToastAndroid, TouchableNativeFeedback, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 import { LinearGradient } from 'expo-linear-gradient';
 import { colors } from '../../theme';
@@ -9,6 +9,7 @@ import { createFavoritePet, deleteFavoritePet, createChatRoom, createChatRoomUse
 import { getUser } from './queries';
 import { getPet } from '../../graphql/queries';
 import { AntDesign } from '@expo/vector-icons';
+import Dialog from "react-native-dialog";
 
 const Details = ({ route, navigation }) => {
     const petID = route?.params?.petID
@@ -27,6 +28,34 @@ const Details = ({ route, navigation }) => {
 
     const [favorite, setFavorite] = useState(false);
     const [favoriteID, setFavoriteID] = useState(null);
+
+    const [favoritesHelpDialogVisible, setFavoritesHelpDialogVisible] = useState(false);
+    const [askQuestionHelpDialogVisible, setAskQuestionHelpDialogVisible] = useState(false);
+    const [makeAppointmentHelpDialogVisible, setMakeAppointmentHelpDialogVisible] = useState(false);
+
+    const displayFavoritesHelpDialog = () => {
+        setFavoritesHelpDialogVisible(true);
+    }
+
+    const dismissFavoritesHelpDialog = () => {
+        setFavoritesHelpDialogVisible(false);
+    }
+
+    const displayAskQuestionHelpDialog = () => {
+        setAskQuestionHelpDialogVisible(true);
+    }
+
+    const dismissAskQuestionHelpDialog = () => {
+        setAskQuestionHelpDialogVisible(false);
+    }
+
+    const displayMakeAppointmentHelpDialog = () => {
+        setMakeAppointmentHelpDialogVisible(true);
+    }
+
+    const dismissMakeAppointmentHelpDialog = () => {
+        setMakeAppointmentHelpDialogVisible(false);
+    }
 
     useEffect( () => {
         const fetchPetData = async () => {
@@ -164,10 +193,25 @@ const Details = ({ route, navigation }) => {
                     <Text style={styles.title}>szczegóły</Text>
                 </View>
             </View>
+            <Dialog.Container visible={favoritesHelpDialogVisible}>
+                <Dialog.Title>Polubione</Dialog.Title>
+                <Dialog.Description>Dodawaj karty do polubionych, aby łatwo znaleźć je w zakładce "polubione".</Dialog.Description>
+                <Dialog.Button label="Ok" onPress={dismissFavoritesHelpDialog}/>
+            </Dialog.Container>
+            <Dialog.Container visible={askQuestionHelpDialogVisible}>
+                <Dialog.Title>Zadaj pytanie</Dialog.Title>
+                <Dialog.Description>Wyślij wiadomość do przedstawiciela schroniska, aby uzyskać więcej informacji na temat zwierzęcia.</Dialog.Description>
+                <Dialog.Button label="Ok" onPress={dismissAskQuestionHelpDialog}/>
+            </Dialog.Container>
+            <Dialog.Container visible={makeAppointmentHelpDialogVisible}>
+                <Dialog.Title>Umów się</Dialog.Title>
+                <Dialog.Description>Wyślij proponowaną datę i godzinę spotkania adopcyjnego do przedstawiciela schroniska. Status propozycji możesz następnie ujrzeć w zakładce "wiadomości".</Dialog.Description>
+                <Dialog.Button label="Ok" onPress={dismissMakeAppointmentHelpDialog}/>
+            </Dialog.Container>
             <View style={styles.content}>
                 <View style={styles.petNameContainer}>
                     <Text style={styles.name}>{name}</Text>
-                    <TouchableOpacity onPress={modifyFavoriteHandler}>
+                    <TouchableOpacity onPress={modifyFavoriteHandler} onLongPress={displayFavoritesHelpDialog}>
                         <AntDesign
                             name={favorite ? "heart" : "hearto"}
                             size={24} 
@@ -193,11 +237,11 @@ const Details = ({ route, navigation }) => {
                     <Text style={styles.description}>{description}</Text>
                 </View>
                 <View style={styles.actionsContainer}>
-                    <TouchableOpacity onPress={askQuestionHandler}>
+                    <TouchableOpacity onPress={askQuestionHandler} onLongPress={displayAskQuestionHelpDialog}>
                         <Text style={styles.askQuestionButton}>Zadaj pytanie</Text>  
                     </TouchableOpacity>
                     <Text style={styles.centeredText}>lub</Text>
-                    <TouchableNativeFeedback onPress={makeAppointmentHandler}>
+                    <TouchableNativeFeedback onPress={makeAppointmentHandler} onLongPress={displayMakeAppointmentHelpDialog}>
                         <LinearGradient
                         start={{x: 0.0, y: 0.0}} end={{x: 1.0, y: 0.0}}
                         locations={[0, 1.0]}

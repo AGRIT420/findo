@@ -9,6 +9,9 @@ import { getUser } from '../../graphql/queries';
 import { TextInput, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { updateUser } from '../../graphql/mutations';
 import Pressable from 'react-native/Libraries/Components/Pressable/Pressable';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import moment from 'moment-timezone';
+import 'moment/locale/pl';
 
 const ProfileEdit = ({ route, navigation }) => {
     const imageUri = route?.params?.imageUri
@@ -23,6 +26,25 @@ const ProfileEdit = ({ route, navigation }) => {
     const [ newLastName, setNewLastName ] = useState(lastName);
     const [ newBirthDate, setNewBirthDate ] = useState(birthDate);
     const [ newCity, setNewCity ] = useState(city);
+    
+    const [date, setDate] = useState(new Date());
+    const [mode, setMode] = useState('date');
+    const [show, setShow] = useState(false);
+
+    const onChange = (event, selectedDate) => {
+        const currentDate = selectedDate;
+        setShow(false);
+        setNewBirthDate(moment(currentDate).format("DD MMMM YYYY"));
+    };
+
+    const showMode = (currentMode) => {
+        setShow(true);
+        setMode(currentMode);
+    };
+
+    const showDatepicker = () => {
+        showMode('date');
+    };
 
     const updateUserData = async () => {
         try {
@@ -77,9 +99,18 @@ const ProfileEdit = ({ route, navigation }) => {
                     <Text style={styles.inputLabel}>Nazwisko</Text>
                     <TextInput editable={true} style={styles.input} value={newLastName} onChangeText={setNewLastName}/>
                     <Text style={styles.inputLabel}>Data urodzenia</Text>
-                    <Pressable style={{width: '100%'}}>
+                    <Pressable style={{width: '100%'}} onPress={showDatepicker} title="Data urodzenia">
                         <TextInput editable={false} style={styles.input} value={newBirthDate}  onChangeText={setNewBirthDate}/>
                     </Pressable>
+                    {show && (
+                        <DateTimePicker
+                            testID="dateTimePicker"
+                            value={date}
+                            is24Hour={true}
+                            onChange={onChange}
+                            maximumDate={new Date()}
+                        />
+                    )}
                     <Text style={styles.inputLabel}>Miejsce zamieszkania</Text>
                     <TextInput editable={true} style={styles.input} value={newCity} onChangeText={setNewCity}/>
                 </View>

@@ -18,6 +18,10 @@ const Profile = ({ navigation }) => {
     const [ birthDate, setBirthDate ] = useState('');
     const [ city, setCity ] = useState('');
 
+    const logout = async () => {
+        Auth.signOut();
+    }
+
     useEffect( () => {
         if(isFocused) {
             fetchUserData();
@@ -92,6 +96,15 @@ const Profile = ({ navigation }) => {
                             colors={[colors.darkBlue, colors.blue]}
                             style={styles.button}>
                             <Text style={styles.buttonText}>Informacje o aplikacji</Text>
+                        </LinearGradient>
+                    </TouchableNativeFeedback>
+                    <TouchableNativeFeedback onPress={logout}>
+                        <LinearGradient
+                            start={{x: 0.0, y: 0.0}} end={{x: 1.0, y: 0.0}}
+                            locations={[0, 1.0]}
+                            colors={[colors.darkBlue, colors.blue]}
+                            style={styles.button}>
+                            <Text style={styles.buttonText}>Wyloguj</Text>
                         </LinearGradient>
                     </TouchableNativeFeedback>
                 </View>

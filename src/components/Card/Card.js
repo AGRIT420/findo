@@ -1,23 +1,29 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { Text, ImageBackground, View, StyleSheet, ToastAndroid } from 'react-native';
+import React, { useState } from 'react';
+import { Text, ImageBackground, View, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { colors } from '../../theme';
-import { API, graphqlOperation, Auth } from 'aws-amplify';
-import { getUser } from '../../graphql/queries';
-import { createFavoritePet, deleteFavoritePet } from '../../graphql/mutations';
-import { TouchableWithoutFeedback, TapGestureHandler, State, TouchableOpacity } from 'react-native-gesture-handler';
-import { AntDesign } from '@expo/vector-icons';
-import { onCreateFavoritePet, onDeleteFavoritePet } from './subscriptions';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import Dialog from "react-native-dialog";
 
 const Card = (props) => {
     const { userID, id, shelter, favoritePet, name, imageUri, description, breed, birthDate, inShelterSinceDate, healthCondition, favoriteID } = props.pet;
 
     const navigation = useNavigation();
 
+    const [dialogVisible, setDialogVisible] = useState(false);
+
+    const displayDialog = () => {
+      setDialogVisible(true);
+    }
+
+    const dismissDialog = () => {
+        setDialogVisible(false);
+    }
+
     return (
       <View style={styles.root}>
-        <TouchableWithoutFeedback onPress={() => navigation.navigate('DetailsScreen', {
+        <TouchableWithoutFeedback onLongPress={displayDialog} onPress={() => navigation.navigate('DetailsScreen', {
           userID: userID,
           petID: id,
           shelterID: shelter.id,
@@ -32,6 +38,12 @@ const Card = (props) => {
           inShelterSinceDate: inShelterSinceDate,
           healthCondition: healthCondition,
         })}>
+          <Dialog.Container visible={dialogVisible}>
+            <Dialog.Title>Przeglądaj</Dialog.Title>
+            <Dialog.Description>Przesuwaj palcem karty, aby przeglądać kolejne zwierzęta czekające na adopcję.</Dialog.Description>
+            <Dialog.Button label="Ok" onPress={dismissDialog}/>
+          </Dialog.Container>
+
           <View style={styles.face}>
             <ImageBackground source={{ uri: imageUri }} style={styles.image}>
               <LinearGradient
